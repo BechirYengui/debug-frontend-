@@ -20,28 +20,30 @@
 
     <form class="auth-form" method="post" action="/signup">
       <input type="hidden" name="next" value="{{NEXT}}">
-      <label class="field">
-        <span>{{t:signup.username}}</span>
-        <input type="text" name="username" value="{{USERNAME}}" placeholder="{{t:signup.username_ph}}"
-               autocomplete="username" autocapitalize="none" spellcheck="false" required minlength="3" maxlength="32" autofocus>
-        <small class="auth-hint">{{t:signup.username_hint}}</small>
-      </label>
-      <label class="field">
-        <span>{{t:signup.password}}</span>
-        <input type="password" name="password" autocomplete="new-password" required minlength="8">
-        <small class="auth-hint">{{t:signup.password_hint}}</small>
-      </label>
-      <label class="field">
-        <span>{{t:signup.password2}}</span>
-        <input type="password" name="password2" autocomplete="new-password" required minlength="8">
-      </label>
-      <label class="field">
-        <span>{{t:signup.lang}}</span>
-        <select name="lang">
+      <div class="field">
+        <label for="signup-username">{{t:signup.username}}</label>
+        <input type="text" id="signup-username" name="username" value="{{USERNAME}}" placeholder="{{t:signup.username_ph}}"
+               autocomplete="username" autocapitalize="none" spellcheck="false" required minlength="3" maxlength="32" autofocus
+               aria-describedby="signup-username-hint">
+        <small class="auth-hint" id="signup-username-hint">{{t:signup.username_hint}}</small>
+      </div>
+      <div class="field">
+        <label for="signup-password">{{t:signup.password}}</label>
+        <input type="password" id="signup-password" name="password" autocomplete="new-password" required minlength="8"
+               aria-describedby="signup-password-hint">
+        <small class="auth-hint" id="signup-password-hint">{{t:signup.password_hint}}</small>
+      </div>
+      <div class="field">
+        <label for="signup-password2">{{t:signup.password2}}</label>
+        <input type="password" id="signup-password2" name="password2" autocomplete="new-password" required minlength="8">
+      </div>
+      <div class="field">
+        <label for="signup-lang">{{t:signup.lang}}</label>
+        <select id="signup-lang" name="lang">
           <option value="fr" {{LANG_FR_SELECTED}}>{{t:signup.lang_fr}}</option>
           <option value="en" {{LANG_EN_SELECTED}}>{{t:signup.lang_en}}</option>
         </select>
-      </label>
+      </div>
       <button class="btn btn-primary auth-submit" type="submit">{{t:signup.submit}}</button>
     </form>
 

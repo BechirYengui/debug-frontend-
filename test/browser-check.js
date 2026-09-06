@@ -11,6 +11,10 @@
  * exactement celui attendu, puis résout le défi côté serveur et vérifie que la
  * page détecte la résolution et affiche le débrief + le quiz.
  *
+ * Puis, pour le chrome commun : aucun défilement horizontal ni erreur console au
+ * chargement de /, /login, /dashboard, /profile et /challenge/08 en 1280 px et
+ * 360 px, et arrêt du polling de /_dojo/state quand la page est cachée.
+ *
  * Variables : CHROME (chemin du binaire), PORT (défaut 3210).
  */
 
@@ -218,14 +222,95 @@ async function main() {
     console.log((row.ok ? '✔' : '✖') + ' ' + row.id + ' ' + row.title.padEnd(44) + ' clic → ' + (row.observed || '?') + (row.notes.length ? '\n     ' + row.notes.join('\n     ') : ''));
   }
 
-  // Tableau de bord après tout ça
+  // Profil après tout ça
   const home = await (await fetch(BASE + '/profile', authed())).text();
-  console.log(home.includes('18<span class="score-d">/18') ? '✔ profil : 18/18 résolus' : '✖ profil : compteur inattendu');
+  const profileOk = /18<span class="score-d">\/18/.test(home);
+  console.log(profileOk ? '✔ profil : 18/18 résolus' : '✖ profil : compteur inattendu');
+
+  // Ouvre un onglet (avec ou sans session) à la largeur demandée et charge `url`.
+  const openTab = async (url, width, withSession) => {
+    const target = await (await fetch('http://127.0.0.1:' + CDP_PORT + '/json/new?about:blank', { method: 'PUT' })).json();
+    const cdp = await CDP.connect(target.webSocketDebuggerUrl);
+    await cdp.send('Page.enable'); await cdp.send('Runtime.enable'); await cdp.send('Network.enable'); await cdp.send('Log.enable');
+    await cdp.send('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: width < 720 });
+    if (withSession) await cdp.send('Network.setCookie', { name: 'dojo_session', value: COOKIE.split('=').slice(1).join('='), url: BASE, path: '/' });
+    else await cdp.send('Network.deleteCookies', { name: 'dojo_session', url: BASE });
+    await cdp.send('Page.navigate', { url: BASE + url });
+    await cdp.waitFor('Page.loadEventFired', 10000);
+    cdp.targetId = target.id;
+    return cdp;
+  };
+  const closeTab = async (cdp) => { try { await cdp.send('Page.close'); } catch (e) {} cdp.close(); };
+  const consoleErrorsOf = (events) => events
+    .filter((e) => e.method === 'Runtime.exceptionThrown' || (e.method === 'Log.entryAdded' && e.params.entry.level === 'error') || (e.method === 'Runtime.consoleAPICalled' && e.params.type === 'error'))
+    .map((e) => e.method === 'Runtime.exceptionThrown' ? (e.params.exceptionDetails.exception && e.params.exceptionDetails.exception.description || e.params.exceptionDetails.text)
+      : e.method === 'Log.entryAdded' ? e.params.entry.text : e.params.args.map((a) => a.value || a.description).join(' '));
+
+  // Chrome commun : pas de défilement horizontal, pas d'erreur console au chargement
+  const PAGES = [['/', false], ['/login', false], ['/dashboard', true], ['/profile', true], ['/challenge/08', true]];
+  const WIDTHS = [1280, 360];
+  let layoutFailed = 0;
+  for (const [url, withSession] of PAGES) {
+    for (const width of WIDTHS) {
+      let cdp = null;
+      const notes = [];
+      try {
+        cdp = await openTab(url, width, withSession);
+        await sleep(900);
+        const m = await cdp.eval('({ inner: window.innerWidth, doc: document.documentElement.scrollWidth, body: document.body.scrollWidth, location: location.pathname })');
+        if (m.doc > m.inner || m.body > m.inner) notes.push('défilement horizontal : ' + Math.max(m.doc, m.body) + ' px pour ' + m.inner + ' px');
+        if (m.location !== url) notes.push('page servie : ' + m.location);
+        const errs = consoleErrorsOf(cdp.events);
+        if (errs.length) notes.push('console : ' + errs[0].split('\n')[0].slice(0, 140));
+      } catch (err) {
+        notes.push('exception : ' + err.message);
+      } finally {
+        if (cdp) await closeTab(cdp);
+      }
+      if (notes.length) layoutFailed++;
+      console.log((notes.length ? '✖' : '✔') + ' ' + (url + ' @ ' + width + ' px').padEnd(28) + (notes.length ? notes.join(' ; ') : 'sans défilement horizontal, console propre'));
+    }
+  }
+
+  // Polling : /_dojo/state s'arrête quand la page est cachée et reprend au retour.
+  // (Page.setWebLifecycleState ne connaît que frozen/active et Emulation.setFocusEmulationEnabled
+  // ne touche pas visibilityState : on cache réellement l'onglet en en ouvrant un autre,
+  // puis on le réactive.)
+  let pollingOk = false;
+  {
+    let cdp = null;
+    let other = null;
+    const countPolls = (events) => events.filter((e) => e.method === 'Network.requestWillBeSent' && /\/_dojo\/state\//.test(e.params.request.url)).length;
+    try {
+      cdp = await openTab('/challenge/08', 1280, true);
+      await sleep(2000);
+      const before = countPolls(cdp.events);
+      other = await (await fetch('http://127.0.0.1:' + CDP_PORT + '/json/new?about:blank', { method: 'PUT' })).json();
+      await sleep(300);
+      const state = await cdp.eval('document.visibilityState');
+      cdp.events.length = 0;
+      await sleep(6000);
+      const hidden = countPolls(cdp.events);
+      await fetch('http://127.0.0.1:' + CDP_PORT + '/json/activate/' + cdp.targetId);
+      cdp.events.length = 0;
+      await sleep(1500);
+      const resumed = countPolls(cdp.events);
+      pollingOk = before > 0 && state === 'hidden' && hidden === 0 && resumed > 0;
+      console.log((pollingOk ? '✔' : '✖') + ' polling : ' + before + ' requête(s) onglet visible, ' + hidden + ' onglet ' + state + ' pendant 6 s (0 attendu), ' + resumed + ' au retour (au moins 1 attendue)');
+    } catch (err) {
+      console.log('✖ polling : exception : ' + err.message);
+    } finally {
+      if (other) { try { await fetch('http://127.0.0.1:' + CDP_PORT + '/json/close/' + other.id); } catch (e) {} }
+      if (cdp) await closeTab(cdp);
+    }
+  }
 
   const failed = results.filter((r) => !r.ok).length;
-  console.log('\n' + (results.length - failed) + '/' + results.length + ' défis conformes.');
+  console.log('\n' + (results.length - failed) + '/' + results.length + ' défis conformes' +
+    (layoutFailed ? ', ' + layoutFailed + ' contrôle(s) de mise en page en échec' : ', mise en page conforme') +
+    (pollingOk ? ', polling conforme.' : ', polling non conforme.'));
   cleanup();
-  process.exit(failed ? 1 : 0);
+  process.exit(failed || layoutFailed || !pollingOk || !profileOk ? 1 : 0);
 }
 
 main().catch((e) => { console.error(e); process.exit(2); });

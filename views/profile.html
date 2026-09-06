@@ -15,7 +15,7 @@
 <header class="hero">
   <div class="hero-text">
     <span class="kicker">{{t:profile.kicker}}</span>
-    <h1>Debug&nbsp;Frontend</h1>
+    <h1>{{t:g.brand}}</h1>
     <p class="lead">{{t:profile.lead}}</p>
   </div>
 
@@ -24,12 +24,13 @@
       <span class="player-name">{{PLAYER_NAME}}</span>
       <span class="belt" style="--belt:{{BELT_COLOR}}"><i></i>{{BELT}}</span>
     </div>
-    <label class="field"><span>{{t:profile.lang}}</span>
-      <select id="lang-select">
+    <div class="field">
+      <label for="lang-select">{{t:profile.lang}}</label>
+      <select id="lang-select" name="lang">
         <option value="fr" {{LANG_FR_SELECTED}}>Français</option>
         <option value="en" {{LANG_EN_SELECTED}}>English</option>
       </select>
-    </label>
+    </div>
     <div class="profile-actions">
       <a class="btn btn-ghost" href="/_dojo/export" download>{{t:profile.export}}</a>
       <form method="post" action="/logout" class="logout-form"><button class="btn btn-ghost" type="submit">{{t:profile.logout}}</button></form>
@@ -38,18 +39,20 @@
   </aside>
 </header>
 
-<section class="scoreboard" aria-label="Progression">
-  <div class="score"><span class="score-n">{{DONE}}<span class="score-d">/{{TOTAL}}</span></span><span class="score-l">{{t:score.done}}</span></div>
-  <div class="score"><span class="score-n">{{SCORE}}</span><span class="score-l">{{t:score.points}}</span></div>
-  <div class="score"><span class="score-n">{{UNDERSTOOD}}</span><span class="score-l">{{t:score.quiz}}</span></div>
-  <div class="score"><span class="score-n">{{HINTS}}</span><span class="score-l">{{t:score.hints}}</span></div>
-  <div class="score"><span class="score-n score-sm">{{TIME}}</span><span class="score-l">{{t:score.time}}</span></div>
-</section>
+<main id="profile-main">
+
+<dl class="scoreboard">
+  <div class="score"><dt class="score-l">{{t:score.done}}</dt><dd class="score-n">{{DONE}}<span class="score-d">/{{TOTAL}}</span></dd></div>
+  <div class="score"><dt class="score-l">{{t:score.points}}</dt><dd class="score-n">{{SCORE}}</dd></div>
+  <div class="score"><dt class="score-l">{{t:score.quiz}}</dt><dd class="score-n">{{UNDERSTOOD}}</dd></div>
+  <div class="score"><dt class="score-l">{{t:score.hints}}</dt><dd class="score-n">{{HINTS}}</dd></div>
+  <div class="score"><dt class="score-l">{{t:score.time}}</dt><dd class="score-n score-sm">{{TIME}}</dd></div>
+</dl>
 
 <a class="next-cta" href="/challenge/{{NEXT_ID}}">{{t:dash.next}} <b>{{NEXT_ID}} : {{NEXT_TITLE}}</b></a>
 
-<section class="dojo-panel rules">
-  <h2>{{t:rules.title}}</h2>
+<section class="dojo-panel rules" aria-labelledby="rules-title">
+  <h2 id="rules-title">{{t:rules.title}}</h2>
   <div class="rules-grid">
     <div>
       <p>{{t:rules.p1}}</p>
@@ -60,7 +63,7 @@ Content-Type: application/json
       <p class="small">{{t:rules.p2}}</p>
     </div>
     <div>
-      <h3 class="small" style="margin:0">{{t:rules.how}}</h3>
+      <h3 class="small rules-how">{{t:rules.how}}</h3>
       <ol class="steps">
         <li><span class="step-n">01</span><b>{{t:rules.s1}}</b><span>{{t:rules.s1.d}}</span></li>
         <li><span class="step-n">02</span><b>{{t:rules.s2}}</b><span>{{t:rules.s2.d}}</span></li>
@@ -81,7 +84,7 @@ Content-Type: application/json
     </div>
     <div>
       <h3>{{t:rules.belts}}</h3>
-      <p style="margin-top:0">{{t:rules.belts.p}}</p>
+      <p>{{t:rules.belts.p}}</p>
       <div class="belts">
         <span class="belt" style="--belt:#e5e7eb"><i></i>{{t:belt.white}}</span>
         <span class="belt" style="--belt:#fde047"><i></i>{{t:belt.yellow}}</span>
@@ -96,9 +99,11 @@ Content-Type: application/json
   </div>
 </section>
 
+</main>
+
 <footer class="home-foot">
   <a class="btn btn-primary" href="/dashboard">{{t:profile.go}}</a>
-  <button id="reset-all" class="btn btn-ghost danger">{{t:profile.reset.all}}</button>
+  <button id="reset-all" class="btn btn-ghost danger" type="button">{{t:profile.reset.all}}</button>
   <span class="small">{{t:profile.reset.note}}</span>
 </footer>
 

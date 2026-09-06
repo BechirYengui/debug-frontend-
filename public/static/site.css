@@ -287,7 +287,7 @@ body.auth::after{
 .auth-sub{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.55}
 .auth-form{margin-top:26px}
 .auth-form .field{margin-bottom:16px}
-.auth-form .field > span{font-size:12.5px;font-weight:500;color:var(--txt-2)}
+.auth-form .field > span,.auth-form .field > label{font-size:12.5px;font-weight:500;color:var(--txt-2)}
 .auth-form input,.auth-form select{font-size:15px;padding:11px 13px;border-radius:10px;background:#0a0d13}
 .auth-form select{appearance:none;-webkit-appearance:none;
   background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);

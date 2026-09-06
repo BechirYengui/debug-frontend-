@@ -13,7 +13,7 @@
 <body>
 {{NAV}}
 
-<div class="dojo-chrono" id="dojo-chrono" title="{{t:ch.chrono}}">00:00</div>
+<div class="dojo-chrono" id="dojo-chrono" role="timer" aria-label="{{t:ch.chrono}}" title="{{t:ch.chrono}}">00:00</div>
 
 <div class="page">
 
@@ -34,8 +34,8 @@
   </div>
 </header>
 
-<section class="dojo-panel context" id="dojo-context">
-  <h2>{{t:ch.why}}</h2>
+<section class="dojo-panel context" id="dojo-context" aria-labelledby="dojo-context-title">
+  <h2 id="dojo-context-title">{{t:ch.why}}</h2>
   <p class="intro">{{INTRO}}</p>
   <div class="context-grid">
     <div>
@@ -49,8 +49,8 @@
   </div>
 </section>
 
-<section class="dojo-panel objective">
-  <h2>{{t:ch.objective}}</h2>
+<section class="dojo-panel objective" aria-labelledby="dojo-objective-title">
+  <h2 id="dojo-objective-title">{{t:ch.objective}}</h2>
   <p>{{t:ch.objective.p}}</p>
   <pre class="req">POST /api/challenge/{{ID}}/solve
 Content-Type: application/json
@@ -63,31 +63,31 @@ Content-Type: application/json
 {{WORKSPACE}}
 </main>
 
-<section class="dojo-panel">
-  <h2>{{t:ch.log}}</h2>
+<section class="dojo-panel" aria-labelledby="dojo-log-title">
+  <h2 id="dojo-log-title">{{t:ch.log}}</h2>
   <p class="small">{{t:ch.log.p}}</p>
-  <div id="dojo-verdict" class="verdict empty">{{t:ch.log.empty}}</div>
+  <div id="dojo-verdict" class="verdict empty" aria-live="polite">{{t:ch.log.empty}}</div>
   <dl id="dojo-received" class="received" hidden></dl>
   <ol id="dojo-server-log" class="server-log" hidden></ol>
 </section>
 
-<section class="dojo-panel hints">
+<section class="dojo-panel hints" aria-labelledby="dojo-hints-title">
   <div class="hints-head">
-    <h2>{{t:ch.hints}}</h2>
+    <h2 id="dojo-hints-title">{{t:ch.hints}}</h2>
     <span class="counter" id="dojo-hint-count"></span>
-    <button class="btn btn-ghost" id="dojo-hint-btn">{{t:ch.hints.btn}}</button>
+    <button class="btn btn-ghost" id="dojo-hint-btn" type="button">{{t:ch.hints.btn}}</button>
   </div>
   <p class="small">{{t:ch.hints.cost}}</p>
   <ol id="dojo-hint-list" class="hint-list"></ol>
   <div class="reveal-row">
-    <button class="btn btn-ghost danger" id="dojo-reveal-btn">{{t:ch.reveal}}</button>
+    <button class="btn btn-ghost danger" id="dojo-reveal-btn" type="button">{{t:ch.reveal}}</button>
     <span class="small">{{t:ch.reveal.note}}</span>
   </div>
 </section>
 
-<section class="dojo-panel debrief" id="dojo-debrief" hidden>
+<section class="dojo-panel debrief" id="dojo-debrief" aria-labelledby="dojo-debrief-title" hidden>
   <div class="panel-head">
-    <h2>{{t:ch.debrief}}</h2>
+    <h2 id="dojo-debrief-title">{{t:ch.debrief}}</h2>
     <span class="badge badge-ok" id="dojo-debrief-badge">{{t:ch.status.done}}</span>
   </div>
   <h3>{{t:ch.debrief.cause}}</h3>
@@ -98,12 +98,12 @@ Content-Type: application/json
   <div class="quiz" id="dojo-quiz">
     <h3>{{t:ch.quiz}} <small>{{t:ch.quiz.bonus}}</small></h3>
     <p class="quiz-q" id="dojo-quiz-q"></p>
-    <div class="quiz-choices" id="dojo-quiz-choices"></div>
-    <p class="quiz-result" id="dojo-quiz-result" hidden></p>
+    <div class="quiz-choices" id="dojo-quiz-choices" role="group" aria-labelledby="dojo-quiz-q"></div>
+    <p class="quiz-result" id="dojo-quiz-result" aria-live="polite" hidden></p>
   </div>
 
   <div class="solution-row">
-    <button class="btn btn-ghost" id="dojo-solution-btn">{{t:ch.solution.show}}</button>
+    <button class="btn btn-ghost" id="dojo-solution-btn" type="button" aria-expanded="false" aria-controls="dojo-solution">{{t:ch.solution.show}}</button>
   </div>
   <article class="solution md" id="dojo-solution" hidden></article>
 
@@ -115,7 +115,7 @@ Content-Type: application/json
 
 </div>
 
-<div class="toast" id="dojo-toast" hidden></div>
+<div class="toast" id="dojo-toast" role="status" aria-live="polite" hidden></div>
 
 {{SCRIPTS}}
 </body>

@@ -21,9 +21,9 @@
   <a class="next-cta" href="/challenge/{{NEXT_ID}}">{{t:dash.next}} <b>{{NEXT_ID}} : {{NEXT_TITLE}}</b></a>
 </header>
 
-<div class="filters" id="filters"><button class="filter is-on" data-filter="all">{{t:dash.filter.all}}</button><button class="filter" data-filter="todo">{{t:dash.filter.todo}}</button><button class="filter" data-filter="done">{{t:dash.filter.done}}</button><button class="filter" data-filter="s1">★☆☆</button><button class="filter" data-filter="s2">★★☆</button><button class="filter" data-filter="s3">★★★</button></div>
-
 <main id="families">
+  <div class="filters" id="filters" role="group"><button class="filter is-on" type="button" data-filter="all" aria-pressed="true">{{t:dash.filter.all}}</button><button class="filter" type="button" data-filter="todo" aria-pressed="false">{{t:dash.filter.todo}}</button><button class="filter" type="button" data-filter="done" aria-pressed="false">{{t:dash.filter.done}}</button><button class="filter" type="button" data-filter="s1" aria-pressed="false" title="{{t:card.difficulty}}">★☆☆</button><button class="filter" type="button" data-filter="s2" aria-pressed="false" title="{{t:card.difficulty}}">★★☆</button><button class="filter" type="button" data-filter="s3" aria-pressed="false" title="{{t:card.difficulty}}">★★★</button></div>
+
 {{FAMILIES}}
 </main>
 

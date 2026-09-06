@@ -20,15 +20,15 @@
 
     <form class="auth-form" method="post" action="/login">
       <input type="hidden" name="next" value="{{NEXT}}">
-      <label class="field">
-        <span>{{t:login.username}}</span>
-        <input type="text" name="username" value="{{USERNAME}}" placeholder="{{t:login.username_ph}}"
+      <div class="field">
+        <label for="login-username">{{t:login.username}}</label>
+        <input type="text" id="login-username" name="username" value="{{USERNAME}}" placeholder="{{t:login.username_ph}}"
                autocomplete="username" autocapitalize="none" spellcheck="false" required minlength="3" maxlength="32" autofocus>
-      </label>
-      <label class="field">
-        <span>{{t:login.password}}</span>
-        <input type="password" name="password" autocomplete="current-password" required>
-      </label>
+      </div>
+      <div class="field">
+        <label for="login-password">{{t:login.password}}</label>
+        <input type="password" id="login-password" name="password" autocomplete="current-password" required>
+      </div>
       <button class="btn btn-primary auth-submit" type="submit">{{t:login.submit}}</button>
     </form>
 
