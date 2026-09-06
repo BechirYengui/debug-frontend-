@@ -1,0 +1,57 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/04.css">
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<div class="card">
+  <div class="card-head">
+    <h2>Brouillon : &laquo; Panorama des réseaux edge en 2026 &raquo;</h2>
+    <span class="chip chip-warn" id="doc-state">brouillon</span>
+  </div>
+
+  <div class="grid-2">
+    <label class="field"><span>Titre</span>
+      <input id="title" type="text" value="Panorama des réseaux edge en 2026">
+    </label>
+    <label class="field"><span>Slug</span>
+      <input id="slug" type="text" value="panorama-reseaux-edge-2026">
+    </label>
+    <label class="field"><span>Rubrique</span>
+      <select id="section">
+        <option>Infrastructure</option>
+        <option>Sécurité</option>
+        <option>Produit</option>
+      </select>
+    </label>
+    <label class="field"><span>Date de publication</span>
+      <input id="publish-at" type="date">
+    </label>
+  </div>
+
+  <label class="field"><span>Chapo</span>
+    <textarea id="excerpt" rows="3">Les opérateurs déplacent le calcul au plus près des utilisateurs. État des lieux, chiffres et angles morts.</textarea>
+  </label>
+</div>
+
+<div class="card editor-metrics" id="metrics">
+  <div class="card-head"><h2>Contrôle avant mise en ligne</h2><span class="chip" id="score-chip">score 0</span></div>
+  <div class="grid-3">
+    <div class="stat"><div class="n" id="m-words">0</div><div class="l">mots du chapo</div></div>
+    <div class="stat"><div class="n" id="m-slug">0</div><div class="l">caractères du slug</div></div>
+    <div class="stat"><div class="n" id="m-read">0</div><div class="l">min de lecture</div></div>
+  </div>
+  <ul class="list-reset checks" id="seo"></ul>
+</div>
+
+<div class="card editor-actions">
+  <div class="actions">
+    <button class="btn btn-primary" id="publish">Valider la commande</button>
+    <span class="note" id="publish-note"></span>
+  </div>
+  <div class="log" id="revisions"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/04.js" defer></script>
+<!--/SCRIPTS-->

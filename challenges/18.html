@@ -1,0 +1,46 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/18.css">
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<div class="card">
+  <div class="card-head">
+    <h2>Alarme TEMP-HIGH : salle B, rangée 7</h2>
+    <span class="chip chip-warn" id="alarm-chip">déclenchée</span>
+  </div>
+
+  <div class="grid-3">
+    <div class="stat"><div class="n temp-hot">31,4 °C</div><div class="l">température</div></div>
+    <div class="stat"><div class="n">27 °C</div><div class="l">seuil</div></div>
+    <div class="stat"><div class="n">42 min</div><div class="l">durée</div></div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <label class="field"><span>Intervention</span>
+      <select id="intervention"></select>
+    </label>
+    <label class="field"><span>Technicien</span>
+      <input id="tech-id" type="text" value="TECH-0451">
+    </label>
+    <label class="field"><span>Nouveau seuil (°C)</span>
+      <input id="new-threshold" type="number" min="20" max="35" value="27">
+    </label>
+    <label class="field"><span>Compte rendu</span>
+      <input id="ack-note" type="text" value="ventilateur R7-V2 remplacé">
+    </label>
+  </div>
+
+  <ul class="list-reset checks" id="alarm-checks"></ul>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="rearm-alarm">Valider la commande</button>
+    <span class="note" id="alarm-note"></span>
+  </div>
+
+  <div class="log" id="alarm-log"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/18.js" defer></script>
+<!--/SCRIPTS-->

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="{{LANG}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{t:login.meta.title}}</title>
+<link rel="stylesheet" href="/static/dojo.css">
+<link rel="stylesheet" href="/static/site.css">
+</head>
+<body class="auth">
+{{NAV}}
+
+<main class="auth-main">
+  <section class="auth-card" aria-labelledby="auth-title">
+    <span class="kicker">{{t:login.kicker}}</span>
+    <h1 class="auth-title" id="auth-title">{{t:login.title}}</h1>
+    <p class="auth-sub">{{t:login.subtitle}}</p>
+
+    {{ERROR}}
+
+    <form class="auth-form" method="post" action="/login">
+      <input type="hidden" name="next" value="{{NEXT}}">
+      <label class="field">
+        <span>{{t:login.username}}</span>
+        <input type="text" name="username" value="{{USERNAME}}" placeholder="{{t:login.username_ph}}"
+               autocomplete="username" autocapitalize="none" spellcheck="false" required minlength="3" maxlength="32" autofocus>
+      </label>
+      <label class="field">
+        <span>{{t:login.password}}</span>
+        <input type="password" name="password" autocomplete="current-password" required>
+      </label>
+      <button class="btn btn-primary auth-submit" type="submit">{{t:login.submit}}</button>
+    </form>
+
+    <p class="auth-switch">{{t:login.no_account}}<a href="/signup">{{t:login.signup_link}}</a></p>
+  </section>
+
+  <a class="auth-back" href="/">{{t:login.back}}</a>
+</main>
+
+</body>
+</html>

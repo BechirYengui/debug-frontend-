@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="{{LANG}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{t:signup.meta.title}}</title>
+<link rel="stylesheet" href="/static/dojo.css">
+<link rel="stylesheet" href="/static/site.css">
+</head>
+<body class="auth">
+{{NAV}}
+
+<main class="auth-main">
+  <section class="auth-card" aria-labelledby="auth-title">
+    <span class="kicker">{{t:signup.kicker}}</span>
+    <h1 class="auth-title" id="auth-title">{{t:signup.title}}</h1>
+    <p class="auth-sub">{{t:signup.subtitle}}</p>
+
+    {{ERROR}}
+
+    <form class="auth-form" method="post" action="/signup">
+      <input type="hidden" name="next" value="{{NEXT}}">
+      <label class="field">
+        <span>{{t:signup.username}}</span>
+        <input type="text" name="username" value="{{USERNAME}}" placeholder="{{t:signup.username_ph}}"
+               autocomplete="username" autocapitalize="none" spellcheck="false" required minlength="3" maxlength="32" autofocus>
+        <small class="auth-hint">{{t:signup.username_hint}}</small>
+      </label>
+      <label class="field">
+        <span>{{t:signup.password}}</span>
+        <input type="password" name="password" autocomplete="new-password" required minlength="8">
+        <small class="auth-hint">{{t:signup.password_hint}}</small>
+      </label>
+      <label class="field">
+        <span>{{t:signup.password2}}</span>
+        <input type="password" name="password2" autocomplete="new-password" required minlength="8">
+      </label>
+      <label class="field">
+        <span>{{t:signup.lang}}</span>
+        <select name="lang">
+          <option value="fr" {{LANG_FR_SELECTED}}>{{t:signup.lang_fr}}</option>
+          <option value="en" {{LANG_EN_SELECTED}}>{{t:signup.lang_en}}</option>
+        </select>
+      </label>
+      <button class="btn btn-primary auth-submit" type="submit">{{t:signup.submit}}</button>
+    </form>
+
+    <p class="auth-note">{{t:signup.note}}</p>
+    <p class="auth-switch">{{t:signup.have_account}}<a href="/login">{{t:signup.login_link}}</a></p>
+  </section>
+
+  <a class="auth-back" href="/">{{t:signup.back}}</a>
+</main>
+
+</body>
+</html>

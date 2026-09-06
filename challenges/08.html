@@ -1,0 +1,46 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/08.css">
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<div class="card">
+  <div class="card-head">
+    <h2 id="ticket-title">chargement...</h2>
+    <span class="chip" id="ticket-chip">…</span>
+  </div>
+
+  <div class="grid-3">
+    <div class="stat"><div class="n" id="ticket-age">…</div><div class="l">âge du ticket</div></div>
+    <div class="stat"><div class="n" id="sla-pct">…</div><div class="l">SLA consommé</div></div>
+    <div class="stat"><div class="n">P2</div><div class="l">priorité</div></div>
+  </div>
+
+  <div class="bar"><div class="bar-fill" id="sla-bar"></div></div>
+
+  <ul class="list-reset checks" id="ticket-notes"></ul>
+
+  <div class="grid-2" style="margin-top:12px">
+    <label class="field"><span>Résolution</span>
+      <select id="resolution"></select>
+    </label>
+    <label class="field"><span>Notification</span>
+      <label class="inline-check"><input type="checkbox" id="notify-client" checked> prévenir le client</label>
+    </label>
+  </div>
+
+  <label class="field"><span>Résumé de clôture</span>
+    <textarea id="summary" rows="3">Rejeu de file corrigé côté plateforme, latence revenue sous 120 ms.</textarea>
+  </label>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="close-ticket">Valider la commande</button>
+    <span class="note" id="ticket-note"></span>
+  </div>
+
+  <div class="log" id="ticket-log"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/08.js" defer></script>
+<!--/SCRIPTS-->

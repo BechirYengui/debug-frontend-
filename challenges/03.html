@@ -1,0 +1,50 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/03.css">
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<div class="card">
+  <div class="card-head">
+    <h2>Rotation de la clé de service</h2>
+    <span class="chip" id="sync-chip" data-state="syncing">synchronisation...</span>
+  </div>
+
+  <div class="grid-2">
+    <label class="field"><span>Clé à remplacer</span>
+      <select id="key-id"></select>
+    </label>
+    <label class="field"><span>Algorithme</span>
+      <select id="algo">
+        <option value="ed25519">ed25519</option>
+        <option value="rsa-4096">rsa-4096</option>
+        <option value="ecdsa-p384">ecdsa-p384</option>
+      </select>
+    </label>
+    <label class="field"><span>Chevauchement (heures)</span>
+      <input id="overlap" type="number" min="0" max="72" value="12">
+    </label>
+    <label class="field"><span>Motif</span>
+      <input id="reason" type="text" value="rotation trimestrielle planifiée">
+    </label>
+  </div>
+
+  <table>
+    <thead><tr><th>consommateur</th><th>environnement</th><th>dernière utilisation</th><th>impact</th></tr></thead>
+    <tbody id="consumers"></tbody>
+  </table>
+
+  <div class="rotation-footer" data-state="syncing">
+    <div class="actions">
+      <button class="btn btn-primary" id="rotate">Valider la commande</button>
+      <label class="inline-check"><input type="checkbox" id="notify" checked> prévenir les propriétaires</label>
+      <span class="note" id="impact-note"></span>
+    </div>
+  </div>
+
+  <div class="log" id="audit"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/03.js" defer></script>
+<!--/SCRIPTS-->

@@ -1,0 +1,48 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/10.css">
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<div class="card">
+  <div class="card-head">
+    <h2>Virement entre comptes internes</h2>
+    <span class="chip" id="bank-chip">…</span>
+  </div>
+
+  <div class="grid-2">
+    <label class="field"><span>Compte débiteur</span><select id="acc-from"></select></label>
+    <label class="field"><span>Compte créditeur</span><select id="acc-to"></select></label>
+    <label class="field"><span>Montant (EUR)</span><input id="amount" type="text" value="1500,00"></label>
+    <label class="field"><span>Date de valeur</span><input id="value-date" type="date"></label>
+  </div>
+
+  <label class="field"><span>Libellé</span>
+    <input id="label" type="text" value="Ajustement de trésorerie">
+  </label>
+
+  <dl class="kv">
+    <dt>solde débiteur</dt><dd id="bal-from">…</dd>
+    <dt>solde créditeur</dt><dd id="bal-to">…</dd>
+    <dt>solde après opération</dt><dd id="bal-after">…</dd>
+  </dl>
+
+  <ul class="list-reset checks" id="bank-checks"></ul>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="execute-transfer">Valider la commande</button>
+    <span class="note" id="bank-note"></span>
+  </div>
+
+  <h3 style="margin-top:20px;font-size:13px;color:#8b98ad">Dernières opérations</h3>
+  <table>
+    <thead><tr><th>date</th><th>de</th><th>vers</th><th>montant</th><th>état</th></tr></thead>
+    <tbody id="bank-hist"></tbody>
+  </table>
+
+  <div class="log" id="bank-log"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/10.js" defer></script>
+<!--/SCRIPTS-->

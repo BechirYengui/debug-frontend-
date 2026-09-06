@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="{{LANG}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{t:dash.title}}</title>
+<link rel="stylesheet" href="/static/dojo.css">
+<script>window.DOJO_HOME = { lang: "{{LANG}}" };</script>
+</head>
+<body class="home">
+{{NAV}}
+
+<div class="page">
+
+<header class="board-head">
+  <div>
+    <span class="kicker">{{t:dash.kicker}}</span>
+    <h1>{{t:dash.h1}}</h1>
+    <p class="lead">{{t:dash.lead}}</p>
+  </div>
+  <a class="next-cta" href="/challenge/{{NEXT_ID}}">{{t:dash.next}} <b>{{NEXT_ID}} : {{NEXT_TITLE}}</b></a>
+</header>
+
+<div class="filters" id="filters"><button class="filter is-on" data-filter="all">{{t:dash.filter.all}}</button><button class="filter" data-filter="todo">{{t:dash.filter.todo}}</button><button class="filter" data-filter="done">{{t:dash.filter.done}}</button><button class="filter" data-filter="s1">★☆☆</button><button class="filter" data-filter="s2">★★☆</button><button class="filter" data-filter="s3">★★★</button></div>
+
+<main id="families">
+{{FAMILIES}}
+</main>
+
+<footer class="home-foot">
+  <span class="small">{{FOOT}}</span>
+</footer>
+
+</div>
+
+<script src="/static/home.js" defer></script>
+</body>
+</html>

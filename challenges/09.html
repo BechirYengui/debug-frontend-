@@ -1,0 +1,53 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/09.css">
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<div class="card">
+  <div class="card-head">
+    <h2>Flotte : passerelles LoRa (groupe pilote)</h2>
+    <span class="chip" id="fleet-chip">…</span>
+  </div>
+
+  <div class="grid-3">
+    <div class="stat"><div class="n" id="f-online">0</div><div class="l">en ligne</div></div>
+    <div class="stat"><div class="n" id="f-target">0</div><div class="l">ciblées</div></div>
+    <div class="stat"><div class="n" id="f-battery">0</div><div class="l">% batterie min</div></div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <label class="field"><span>Image firmware</span>
+      <select id="image"></select>
+    </label>
+    <label class="field"><span>Groupe</span>
+      <select id="group">
+        <option value="pilot">pilote (12)</option>
+        <option value="north">région nord (48)</option>
+        <option value="all">toute la flotte (214)</option>
+      </select>
+    </label>
+    <label class="field"><span>Batterie minimale (%)</span>
+      <input id="min-battery" type="number" min="10" max="100" value="40">
+    </label>
+    <label class="field"><span>Fenêtre</span>
+      <input id="window" type="time" value="02:30">
+    </label>
+  </div>
+
+  <table>
+    <thead><tr><th>passerelle</th><th>firmware</th><th>batterie</th><th>signal</th><th>état</th></tr></thead>
+    <tbody id="devices"></tbody>
+  </table>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="push-firmware">Valider la commande</button>
+    <span class="note" id="fleet-note"></span>
+  </div>
+
+  <div class="log" id="fleet-log"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/09.js" defer></script>
+<!--/SCRIPTS-->

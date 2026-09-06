@@ -1,0 +1,4 @@
+.checks-title{ margin:14px 0 4px; font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--faint); font-weight:500; }
+#cmp-checks .chip{ margin-left:auto; }
+.btn.is-busy{ filter:saturate(.6); cursor:progress; animation:cmp-pulse 1.4s ease-in-out infinite; }
+@keyframes cmp-pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.65; } }

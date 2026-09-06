@@ -1,0 +1,11 @@
+.view-transition{
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: #0b0e14;
+  opacity: 1;
+  transition: opacity .35s ease;
+}
+.view-transition.is-idle{ opacity: 0; }
+
+.checks li + li{ border-top: 1px dashed #1c2536; }

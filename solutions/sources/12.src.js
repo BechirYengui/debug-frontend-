@@ -1,0 +1,43 @@
+(function(){
+"use strict";
+var V=[
+{p:"prod/billing/stripe",v:7,upd:"2026-08-21",lock:true},
+{p:"prod/billing/sepa-mandate",v:3,upd:"2026-07-02",lock:true},
+{p:"staging/search/api-key",v:12,upd:"2026-08-30",lock:false},
+{p:"shared/smtp/relay",v:2,upd:"2026-05-14",lock:true}
+];
+var K={t:null,ttl:0,scopes:[]};
+var E={};
+var S={path:V[0].p,reason:"incident INC-40921",ttl:15,confirm:false};
+function g(i){return document.getElementById(i);}
+function log(t){var b=g("vault-log");var d=document.createElement("div");d.textContent=new Date().toTimeString().slice(0,8)+"  "+t;b.insertBefore(d,b.firstChild);}
+function mask(v){return v?String(v).slice(0,4)+"...."+String(v).slice(-4):"aucun";}
+function rows(){E.rows.innerHTML=V.map(function(s){var a=s.p===S.path;return '<tr style="opacity:'+(a?1:.55)+'"><td>'+s.p+"</td><td>v"+s.v+"</td><td>"+s.upd+'</td><td><span class="chip '+(s.lock?"chip-warn":"chip-ok")+'">'+(s.lock?"verrouillé":"ouvert")+"</span></td></tr>";}).join("");}
+function paths(){E.path.innerHTML=V.map(function(s){return '<option value="'+s.p+'"'+(s.p===S.path?" selected":"")+">"+s.p+"</option>";}).join("");}
+function ses(){log("négociation de session...");return fetch("/api/session",{headers:{"Accept":"application/json"}}).then(function(r){return r.json();}).then(function(d){K.t=d.token;K.ttl=d.expiresIn;K.scopes=d.scopes||[];E.sess.textContent="ops-console / jeton "+mask(K.t);E.ttl.textContent=Math.round(K.ttl/60)+" min";E.scopes.innerHTML=K.scopes.map(function(s){return '<span class="chip">'+s+"</span>";}).join(" ");log("session établie, "+K.scopes.length+" portées");}).catch(function(e){log("session indisponible : "+e.message);});}
+function upd(){S.path=E.path.value;S.reason=E.reason.value.trim();var n=parseInt(E.ttl2.value,10);S.ttl=isNaN(n)?15:Math.min(120,Math.max(5,n));S.confirm=E.confirm.checked;var o=[];if(S.reason.length<6){o.push("motif d'accès trop court");}if(!S.confirm){o.push("engagement de confidentialité non coché");}if(!K.t){o.push("session non établie");}E.checks.innerHTML=o.length?o.map(function(x){return '<li><span class="dot warn"></span>'+x+"</li>";}).join(""):'<li><span class="dot"></span>Pré-requis d\'ouverture réunis.</li>';E.chip.className="chip "+(o.length?"chip-warn":"chip-ok");E.chip.textContent=o.length?o.length+" pré-requis manquant(s)":"prêt à déverrouiller";E.note.textContent=S.path+" - accès "+S.ttl+" min - motif : "+(S.reason||"non renseigné");rows();}
+function tx(){log("ouverture demandée sur "+S.path);fetch("/api/challenge/12/solve",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({challengeId:"12",action:"validate",path:S.path,ttlMinutes:S.ttl,reason:S.reason})}).then(function(r){return r.json().then(function(j){return {s:r.status,j:j};});}).then(function(x){log("réponse "+x.s+" : "+(x.j.message||x.j.error));}).catch(function(e){log("échec réseau : "+e.message);});}
+E.path=g("secret-path");
+E.reason=g("access-reason");
+E.ttl2=g("access-ttl");
+E.confirm=g("nda");
+E.rows=g("vault-rows");
+E.checks=g("vault-checks");
+E.chip=g("vault-chip");
+E.note=g("vault-note");
+E.sess=g("session-line");
+E.ttl=g("session-ttl");
+E.scopes=g("session-scopes");
+E.go=g("unlock-vault");
+E.renew=g("renew-session");
+paths();
+upd();
+ses().then(upd);
+E.path.addEventListener("change",upd);
+E.reason.addEventListener("input",upd);
+E.ttl2.addEventListener("input",upd);
+E.confirm.addEventListener("change",upd);
+E.renew.addEventListener("click",function(){ses().then(upd);});
+E.go.addEventListener("click",tx);
+log("inventaire du coffre chargé : "+V.length+" secrets");
+})();

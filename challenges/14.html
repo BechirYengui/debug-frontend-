@@ -1,0 +1,48 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/14.css">
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<div class="card">
+  <div class="card-head">
+    <h2>Campagne « Rentrée 2026 : Search »</h2>
+    <span class="chip chip-warn" id="cmp-chip">budget dépassé</span>
+  </div>
+
+  <div class="grid-3">
+    <div class="stat"><div class="n" id="cmp-budget">118 %</div><div class="l">budget consommé</div></div>
+    <div class="stat"><div class="n" id="cmp-cpc">0,94 €</div><div class="l">CPC moyen</div></div>
+    <div class="stat"><div class="n" id="cmp-conv">312</div><div class="l">conversions</div></div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <label class="field"><span>Périmètre de la pause</span>
+      <select id="pause-scope">
+        <option value="campaign">campagne entière</option>
+        <option value="brand">groupe d’annonces « marque »</option>
+        <option value="generic">mots-clés génériques</option>
+      </select>
+    </label>
+    <label class="field"><span>Reprise prévue le</span>
+      <input id="pause-until" type="date">
+    </label>
+    <label class="field"><span>Motif</span>
+      <input id="pause-reason" type="text" value="dépassement du budget mensuel">
+    </label>
+  </div>
+
+  <h3 class="checks-title">Contrôles avant mise en pause</h3>
+  <ul class="list-reset checks" id="cmp-checks"></ul>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="pause-campaign">Valider la commande</button>
+    <span class="note" id="cmp-note"></span>
+  </div>
+
+  <div class="log" id="cmp-log"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/14.js" defer></script>
+<!--/SCRIPTS-->

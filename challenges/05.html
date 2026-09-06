@@ -1,0 +1,56 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/05.css">
+<script src="/c/05-bindings.js"></script>
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<div class="card">
+  <div class="card-head">
+    <h2>Campagne &laquo; relance-facture-J+7 &raquo;</h2>
+    <span class="chip" id="batch-chip">prêt à expédier</span>
+  </div>
+
+  <div class="grid-3">
+    <div class="stat"><div class="n" id="s-total">0</div><div class="l">destinataires</div></div>
+    <div class="stat"><div class="n" id="s-selected">0</div><div class="l">retenus</div></div>
+    <div class="stat"><div class="n" id="s-cost">0</div><div class="l">crédits</div></div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <label class="field"><span>Canal</span>
+      <select id="channel">
+        <option value="email">email</option>
+        <option value="sms">sms</option>
+        <option value="push">push</option>
+      </select>
+    </label>
+    <label class="field"><span>Segment</span>
+      <select id="segment">
+        <option value="all">tous</option>
+        <option value="late">en retard</option>
+        <option value="vip">comptes clés</option>
+      </select>
+    </label>
+  </div>
+
+  <label class="field"><span>Modèle</span>
+    <textarea id="template" rows="3">Bonjour {{prenom}}, votre facture {{ref}} arrive à échéance le {{date}}.</textarea>
+  </label>
+
+  <table>
+    <thead><tr><th>contact</th><th>segment</th><th>dernier envoi</th><th>état</th></tr></thead>
+    <tbody id="recipients"></tbody>
+  </table>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="dispatch-batch">Valider la commande</button>
+    <span class="note" id="dispatch-note"></span>
+  </div>
+
+  <div class="log" id="outbox"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/05.js" defer></script>
+<!--/SCRIPTS-->

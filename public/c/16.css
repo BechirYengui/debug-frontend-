@@ -1,0 +1,7 @@
+.session-card{ border-left: 3px solid #7dd3fc; }
+.session-card .kv dd{ color: #9fd8f5; }
+#grid-rows td:first-child{ font-weight: 600; }
+#grid-rows td.num{ font-family: var(--mono); text-align: right; }
+#grid-rows th.num{ text-align: right; }
+.delta-up{ color: #fbbf24; }
+.delta-flat{ color: #8b98ad; }

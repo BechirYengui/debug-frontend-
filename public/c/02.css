@@ -1,0 +1,7 @@
+.btn.is-ready{
+  opacity: 1;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px rgba(94,234,212,.35), 0 6px 18px rgba(24,165,139,.22);
+}
+.stat .n{ transition: color .2s ease; }
+.stat .n.hot{ color: #fbbf24; }

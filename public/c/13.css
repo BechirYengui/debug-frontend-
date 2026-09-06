@@ -1,0 +1,5 @@
+.signals-title{ margin:14px 0 4px; font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--faint); font-weight:500; }
+.field-check .check-row{ display:flex; align-items:center; gap:8px; padding:8px 0; font-size:13px; color:var(--txt); }
+.field-check input[type=checkbox]{ width:auto; margin:0; }
+#signals .chip{ margin-left:auto; }
+#merchant{ font-family:var(--mono); color:var(--accent-2); }

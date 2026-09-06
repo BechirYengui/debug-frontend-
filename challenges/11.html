@@ -1,0 +1,62 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/11.css">
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<div class="card">
+  <div class="card-head">
+    <h2>Import : contacts-2026-09.csv</h2>
+    <span class="chip" id="csv-chip">…</span>
+  </div>
+
+  <div class="grid-3">
+    <div class="stat"><div class="n" id="n-ok">0</div><div class="l">lignes valides</div></div>
+    <div class="stat"><div class="n" id="n-ko">0</div><div class="l">lignes rejetées</div></div>
+    <div class="stat"><div class="n" id="n-col">0</div><div class="l">colonnes mappées</div></div>
+  </div>
+
+  <label class="field" style="margin-top:16px"><span>Contenu du fichier</span>
+    <textarea id="csv-src" rows="7">email,prenom,nom,societe,pays
+a.moreau@nordis.fr,Alice,Moreau,Nordis,FR
+contact@grivel-sa.com,Paul,Grivel,Grivel SA,FR
+f.diallo@atlaslog.fr,Fatou,Diallo,Atlas Log,SN
+pas-un-email,Rene,Petit,Petitpas,BE
+a.moreau@nordis.fr,Alice,Moreau,Nordis,FR
+compta@laforet.io,Marc,Laforet,Laforet,CH</textarea>
+  </label>
+
+  <div class="grid-3">
+    <label class="field"><span>Séparateur</span>
+      <select id="separator">
+        <option value=",">virgule</option>
+        <option value=";">point-virgule</option>
+        <option value="	">tabulation</option>
+      </select>
+    </label>
+    <label class="field"><span>En-tête</span>
+      <label class="inline-check"><input type="checkbox" id="skip-header" checked> première ligne = en-tête</label>
+    </label>
+    <label class="field"><span>Doublons</span>
+      <label class="inline-check"><input type="checkbox" id="dedup" checked> dédoublonner sur l'email</label>
+    </label>
+  </div>
+
+  <table>
+    <thead id="csv-head"></thead>
+    <tbody id="csv-body"></tbody>
+  </table>
+
+  <ul class="list-reset checks" id="csv-errors"></ul>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="run-import">Valider la commande</button>
+    <span class="note" id="csv-note"></span>
+  </div>
+
+  <div class="log" id="csv-log"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/11.js" defer></script>
+<!--/SCRIPTS-->

@@ -1,0 +1,4 @@
+.stat .n.temp-hot{ color: #f87171; }
+#tech-id{ font-family: var(--mono); text-transform: uppercase; }
+#alarm-chip.chip-warn{ animation: alarm-blink 1.6s ease-in-out infinite; }
+@keyframes alarm-blink{ 0%,100%{ opacity: 1; } 50%{ opacity: .55; } }

@@ -1,0 +1,55 @@
+(function(){
+"use strict";
+var T={id:"INC-40921",title:"Latence intermittente sur l'API de facturation",prio:"P2",opened:"2026-08-27T09:14:00Z",sla:14400000};
+var N=[
+{a:"support",t:"Prise en charge, reproduction sur le compte 8841.",at:"09:22"},
+{a:"platform",t:"Pic de latence corrélé à un rejeu de file.",at:"10:05"},
+{a:"support",t:"Contournement communiqué au client.",at:"11:47"}
+];
+var R=["corrige","contourne","non reproductible","doublon"];
+var ss={id:"sess-7712",roles:["agent","reader"],since:Date.now()};
+if(ss.roles.indexOf("supervisor")!==-1){ss.profile={handle:"n2-lead",scope:"all"};}
+var E={};
+var st={res:"corrige",notify:true,summary:""};
+function g(i){return document.getElementById(i);}
+function pad(n){return (n<10?"0":"")+n;}
+function dur(ms){var s=Math.floor(ms/1000);var h=Math.floor(s/3600);var m=Math.floor((s%3600)/60);return pad(h)+" h "+pad(m);}
+function log(t){var b=g("ticket-log");var d=document.createElement("div");d.textContent=new Date().toTimeString().slice(0,8)+"  "+t;b.insertBefore(d,b.firstChild);}
+function notes(){E.notes.innerHTML=N.map(function(n){return '<li><span class="dot"></span><strong>'+n.a+"</strong> &middot; "+n.at+" : "+n.t+"</li>";}).join("");}
+function opts(){E.res.innerHTML=R.map(function(r){return '<option value="'+r+'"'+(r===st.res?" selected":"")+">"+r+"</option>";}).join("");}
+function elapsed(){return Date.now()-new Date(T.opened).getTime();}
+function sla(){var e=elapsed();var p=Math.min(100,Math.round(e/T.sla*100));E.sla.textContent=p+" %";E.slaBar.style.width=Math.min(100,p)+"%";E.slaBar.className="bar-fill"+(p>=100?" over":"");E.age.textContent=dur(e);}
+function busy(b){E.close.textContent=b?"envoi...":"Valider la commande";E.close.classList.toggle("is-busy",b);}
+function payload(){return {challengeId:"08",action:"validate",ticket:T.id,resolution:st.res,closedBy:ss.profile.handle,notify:st.notify};}
+function tx(p){log("clôture demandée "+p.ticket);fetch("/api/challenge/08/solve",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(p)}).then(function(r){return r.json().then(function(j){return {s:r.status,j:j};});}).then(function(x){log("réponse "+x.s+" : "+(x.j.message||x.j.error));}).catch(function(e){log("échec réseau : "+e.message);});}
+function upd(){st.res=E.res.value;st.notify=E.notify.checked;st.summary=E.summary.value.trim();E.note.textContent=T.prio+" - "+N.length+" échanges - résolution "+st.res+(st.notify?" - client notifié":"");E.chip.className="chip "+(st.summary.length>=12?"chip-ok":"chip-warn");E.chip.textContent=st.summary.length>=12?"prêt à clore":"résumé trop court";}
+E.res=g("resolution");
+E.notify=g("notify-client");
+E.summary=g("summary");
+E.notes=g("ticket-notes");
+E.note=g("ticket-note");
+E.chip=g("ticket-chip");
+E.sla=g("sla-pct");
+E.slaBar=g("sla-bar");
+E.age=g("ticket-age");
+E.close=g("close-ticket");
+E.title=g("ticket-title");
+E.title.innerHTML=T.id+" : "+T.title;
+opts();
+notes();
+upd();
+sla();
+setInterval(sla,20000);
+E.res.addEventListener("change",upd);
+E.notify.addEventListener("change",upd);
+E.summary.addEventListener("input",upd);
+E.close.addEventListener("click",function(){
+busy(true);
+try{
+var p=payload();
+tx(p);
+}catch(err){}
+busy(false);
+});
+log("ticket "+T.id+" chargé, "+N.length+" échanges");
+})();

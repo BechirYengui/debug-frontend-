@@ -1,0 +1,46 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/02.css">
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<div class="card">
+  <div class="card-head">
+    <h2>Vanne V-204 : circuit primaire</h2>
+    <span class="chip" id="valve-chip">fermée</span>
+  </div>
+
+  <div class="grid-3">
+    <div class="stat"><div class="n" id="stat-pressure">4.2</div><div class="l">bar amont</div></div>
+    <div class="stat"><div class="n" id="stat-temp">61</div><div class="l">&deg;C fluide</div></div>
+    <div class="stat"><div class="n" id="stat-flow">0</div><div class="l">m3/h</div></div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <label class="field"><span>Consigne d'ouverture (%)</span>
+      <input id="setpoint" type="number" min="0" max="100" value="35">
+    </label>
+    <label class="field"><span>Rampe (s)</span>
+      <input id="ramp" type="number" min="5" max="120" value="20">
+    </label>
+    <label class="field"><span>Opérateur habilité</span>
+      <input id="operator" type="text" value="B. YENGUI" maxlength="24">
+    </label>
+    <label class="field"><span>Ordre de travail</span>
+      <input id="work-order" type="text" value="OT-2024-8817">
+    </label>
+  </div>
+
+  <ul class="list-reset checks" id="interlocks"></ul>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="open-valve" disabled aria-disabled="true">Valider la commande</button>
+    <span class="note" id="readiness"></span>
+  </div>
+
+  <div class="log" id="journal"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/02.js" defer></script>
+<!--/SCRIPTS-->

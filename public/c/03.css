@@ -1,0 +1,16 @@
+.rotation-footer{
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid #26324a;
+}
+.rotation-footer[data-state="syncing"]{ pointer-events: none; }
+.rotation-footer[data-state="ready"]{ pointer-events: auto; }
+
+.inline-check{
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: #8b98ad;
+}
+.inline-check input{ width: auto; }

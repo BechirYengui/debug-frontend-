@@ -1,0 +1,50 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/12.css">
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<div class="card session-card">
+  <div class="card-head"><h2>Session applicative</h2><button class="btn btn-ghost" id="renew-session">renouveler</button></div>
+  <dl class="kv">
+    <dt>identité</dt><dd id="session-line">négociation...</dd>
+    <dt>validité</dt><dd id="session-ttl">…</dd>
+    <dt>portées</dt><dd id="session-scopes">…</dd>
+  </dl>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <h2>Coffre applicatif</h2>
+    <span class="chip" id="vault-chip">…</span>
+  </div>
+
+  <table>
+    <thead><tr><th>chemin</th><th>version</th><th>dernière écriture</th><th>état</th></tr></thead>
+    <tbody id="vault-rows"></tbody>
+  </table>
+
+  <div class="grid-2" style="margin-top:16px">
+    <label class="field"><span>Secret à ouvrir</span><select id="secret-path"></select></label>
+    <label class="field"><span>Durée d'accès (min)</span><input id="access-ttl" type="number" min="5" max="120" value="15"></label>
+  </div>
+
+  <label class="field"><span>Motif d'accès</span>
+    <input id="access-reason" type="text" value="incident INC-40921">
+  </label>
+
+  <label class="inline-check"><input type="checkbox" id="nda" checked> je m'engage à ne pas extraire le secret hors de l'outil</label>
+
+  <ul class="list-reset checks" id="vault-checks"></ul>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="unlock-vault">Valider la commande</button>
+    <span class="note" id="vault-note"></span>
+  </div>
+
+  <div class="log" id="vault-log"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/12.js" defer></script>
+<!--/SCRIPTS-->

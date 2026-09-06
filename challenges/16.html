@@ -1,0 +1,58 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/16.css">
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<script id="sso-handoff" type="application/json">{"provider":"sso-corp","token":"ops_7c1e4b0a9d2f6e8c3b5a1f0d","issuedAt":"2026-08-12T07:41:09Z","expiresAt":"2027-08-12T07:41:09Z","scopes":["pricing:read","pricing:publish"]}</script>
+
+<div class="card session-card">
+  <div class="card-head"><h2>Session applicative</h2><span class="chip" id="tok-chip">…</span></div>
+  <dl class="kv">
+    <dt>identité</dt><dd id="tok-line">négociation...</dd>
+    <dt>émis le</dt><dd id="tok-issued">…</dd>
+    <dt>source</dt><dd id="tok-source">…</dd>
+  </dl>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <h2>Grille tarifaire v14 : Offre PME</h2>
+    <span class="chip" id="grid-chip">…</span>
+  </div>
+
+  <table>
+    <thead><tr><th>plan</th><th>prix actuel</th><th>nouveau prix</th><th>variation</th></tr></thead>
+    <tbody id="grid-rows"></tbody>
+  </table>
+
+  <div class="grid-2" style="margin-top:16px">
+    <label class="field"><span>Date d'effet</span>
+      <input id="effective-date" type="date">
+    </label>
+    <label class="field"><span>Région</span>
+      <select id="grid-region">
+        <option value="FR">France</option>
+        <option value="BE">Belgique</option>
+        <option value="CH">Suisse</option>
+      </select>
+    </label>
+  </div>
+
+  <label class="field"><span>Motif de publication</span>
+    <input id="grid-note" type="text" value="alignement inflation 2026">
+  </label>
+
+  <ul class="list-reset checks" id="grid-checks"></ul>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="publish-grid">Valider la commande</button>
+    <span class="note" id="grid-note-line"></span>
+  </div>
+
+  <div class="log" id="grid-log"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/16.js" defer></script>
+<!--/SCRIPTS-->

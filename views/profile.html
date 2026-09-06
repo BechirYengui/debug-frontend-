@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="{{LANG}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{t:profile.title}}</title>
+<link rel="stylesheet" href="/static/dojo.css">
+<script>window.DOJO_HOME = { lang: "{{LANG}}", confirmDelete: "{{t:profile.delete.confirm}}", confirmReset: "{{t:profile.reset.confirm}}" };</script>
+</head>
+<body class="home">
+{{NAV}}
+
+<div class="page">
+
+<header class="hero">
+  <div class="hero-text">
+    <span class="kicker">{{t:profile.kicker}}</span>
+    <h1>Debug&nbsp;Frontend</h1>
+    <p class="lead">{{t:profile.lead}}</p>
+  </div>
+
+  <aside class="profile-card" style="--belt:{{BELT_COLOR}}" aria-label="{{t:profile.account}}">
+    <div class="profile-id">
+      <span class="player-name">{{PLAYER_NAME}}</span>
+      <span class="belt" style="--belt:{{BELT_COLOR}}"><i></i>{{BELT}}</span>
+    </div>
+    <label class="field"><span>{{t:profile.lang}}</span>
+      <select id="lang-select">
+        <option value="fr" {{LANG_FR_SELECTED}}>Français</option>
+        <option value="en" {{LANG_EN_SELECTED}}>English</option>
+      </select>
+    </label>
+    <div class="profile-actions">
+      <a class="btn btn-ghost" href="/_dojo/export" download>{{t:profile.export}}</a>
+      <form method="post" action="/logout" class="logout-form"><button class="btn btn-ghost" type="submit">{{t:profile.logout}}</button></form>
+      <button class="btn btn-ghost danger" id="account-delete" type="button">{{t:profile.delete}}</button>
+    </div>
+  </aside>
+</header>
+
+<section class="scoreboard" aria-label="Progression">
+  <div class="score"><span class="score-n">{{DONE}}<span class="score-d">/{{TOTAL}}</span></span><span class="score-l">{{t:score.done}}</span></div>
+  <div class="score"><span class="score-n">{{SCORE}}</span><span class="score-l">{{t:score.points}}</span></div>
+  <div class="score"><span class="score-n">{{UNDERSTOOD}}</span><span class="score-l">{{t:score.quiz}}</span></div>
+  <div class="score"><span class="score-n">{{HINTS}}</span><span class="score-l">{{t:score.hints}}</span></div>
+  <div class="score"><span class="score-n score-sm">{{TIME}}</span><span class="score-l">{{t:score.time}}</span></div>
+</section>
+
+<a class="next-cta" href="/challenge/{{NEXT_ID}}">{{t:dash.next}} <b>{{NEXT_ID}} : {{NEXT_TITLE}}</b></a>
+
+<section class="dojo-panel rules">
+  <h2>{{t:rules.title}}</h2>
+  <div class="rules-grid">
+    <div>
+      <p>{{t:rules.p1}}</p>
+      <pre class="req">POST /api/challenge/&lt;id&gt;/solve
+Content-Type: application/json
+
+{"challengeId":"&lt;id&gt;","action":"validate"}</pre>
+      <p class="small">{{t:rules.p2}}</p>
+    </div>
+    <div>
+      <h3 class="small" style="margin:0">{{t:rules.how}}</h3>
+      <ol class="steps">
+        <li><span class="step-n">01</span><b>{{t:rules.s1}}</b><span>{{t:rules.s1.d}}</span></li>
+        <li><span class="step-n">02</span><b>{{t:rules.s2}}</b><span>{{t:rules.s2.d}}</span></li>
+        <li><span class="step-n">03</span><b>{{t:rules.s3}}</b><span>{{t:rules.s3.d}}</span></li>
+        <li><span class="step-n">04</span><b>{{t:rules.s4}}</b><span>{{t:rules.s4.d}}</span></li>
+      </ol>
+    </div>
+  </div>
+  <div class="bareme">
+    <div>
+      <h3>{{t:rules.scoring}}</h3>
+      <ul>
+        <li><span class="val">★ × 100 {{t:g.pts}}</span><span>{{t:rules.base}}</span></li>
+        <li><span class="val neg">−10 %</span><span>{{t:rules.hint}}</span></li>
+        <li><span class="val neg">−50 %</span><span>{{t:rules.revealed}}</span></li>
+        <li><span class="val pos">+25 {{t:g.pts}}</span><span>{{t:rules.quiz}}</span></li>
+      </ul>
+    </div>
+    <div>
+      <h3>{{t:rules.belts}}</h3>
+      <p style="margin-top:0">{{t:rules.belts.p}}</p>
+      <div class="belts">
+        <span class="belt" style="--belt:#e5e7eb"><i></i>{{t:belt.white}}</span>
+        <span class="belt" style="--belt:#fde047"><i></i>{{t:belt.yellow}}</span>
+        <span class="belt" style="--belt:#fb923c"><i></i>{{t:belt.orange}}</span>
+        <span class="belt" style="--belt:#4ade80"><i></i>{{t:belt.green}}</span>
+        <span class="belt" style="--belt:#60a5fa"><i></i>{{t:belt.blue}}</span>
+        <span class="belt" style="--belt:#a16207"><i></i>{{t:belt.brown}}</span>
+        <span class="belt" style="--belt:#1f2937"><i></i>{{t:belt.black}}</span>
+      </div>
+      <p>{{t:rules.dan}}</p>
+    </div>
+  </div>
+</section>
+
+<footer class="home-foot">
+  <a class="btn btn-primary" href="/dashboard">{{t:profile.go}}</a>
+  <button id="reset-all" class="btn btn-ghost danger">{{t:profile.reset.all}}</button>
+  <span class="small">{{t:profile.reset.note}}</span>
+</footer>
+
+</div>
+
+<script src="/static/home.js" defer></script>
+</body>
+</html>

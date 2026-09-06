@@ -1,0 +1,8 @@
+.checks-title{ margin:14px 0 4px; font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--faint); font-weight:500; }
+#po-lines td:nth-child(n+2){ font-family:var(--mono); text-align:right; }
+#po-lines th:nth-child(n+2){ text-align:right; }
+.po-totals{ background:#0d1219; border:1px solid var(--line); border-radius:10px; padding:12px 14px; align-self:start; }
+.po-totals .kv dd{ text-align:right; color:var(--accent-2); }
+.po-totals .kv dd:last-child{ font-weight:700; }
+#po-otp{ font-family:var(--mono); letter-spacing:.12em; }
+#po-checks .chip{ margin-left:auto; }

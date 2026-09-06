@@ -1,0 +1,11 @@
+#recipients td:first-child{ font-family: var(--mono); }
+.preview{
+  font-family: var(--mono);
+  font-size: 12px;
+  color: #9fb3cd;
+  background: #0b1017;
+  border: 1px solid #26324a;
+  border-radius: 8px;
+  padding: 9px 11px;
+  margin: 10px 0 0;
+}

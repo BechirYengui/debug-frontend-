@@ -1,0 +1,53 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/17.css">
+<script src="/c/17-guard.js"></script>
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<div class="card">
+  <div class="card-head">
+    <h2>Export FEC : septembre 2026</h2>
+    <span class="chip" id="fec-chip">…</span>
+  </div>
+
+  <div class="grid-3">
+    <div class="stat"><div class="n">1 284</div><div class="l">écritures</div></div>
+    <div class="stat"><div class="n">6</div><div class="l">journaux</div></div>
+    <div class="stat"><div class="n">0,00</div><div class="l">écart de balance</div></div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <label class="field"><span>Période</span>
+      <select id="fec-period">
+        <option value="2026-09">septembre 2026</option>
+        <option value="2026-08">août 2026</option>
+        <option value="2026-Q3">T3 2026</option>
+      </select>
+    </label>
+    <label class="field"><span>Format</span>
+      <select id="fec-format">
+        <option value="fec">FEC</option>
+        <option value="csv">CSV</option>
+        <option value="xlsx">XLSX</option>
+      </select>
+    </label>
+  </div>
+
+  <label class="field"><span>Destinataire</span>
+    <input id="fec-recipient" type="email" value="cabinet@expertise-durand.fr">
+  </label>
+
+  <ul class="list-reset checks" id="fec-checks"></ul>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="send-export">Valider la commande</button>
+    <span class="note" id="fec-note"></span>
+  </div>
+
+  <div class="log" id="fec-log"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/17.js" defer></script>
+<!--/SCRIPTS-->

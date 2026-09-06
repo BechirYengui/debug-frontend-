@@ -1,0 +1,53 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/15.css">
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<div class="card">
+  <div class="card-head">
+    <h2>Bon de commande BC-2026-0917 : Nordis</h2>
+    <span class="chip" id="po-chip">en attente de signature</span>
+  </div>
+
+  <table>
+    <thead><tr><th>désignation</th><th>quantité</th><th>prix unitaire HT</th><th>total HT</th></tr></thead>
+    <tbody id="po-lines"></tbody>
+  </table>
+
+  <div class="grid-2" style="margin-top:16px">
+    <label class="field"><span>Signataire</span>
+      <select id="signer">
+        <option value="l.fabre">Acheteur principal : L. Fabre</option>
+        <option value="n.okoro">Directrice achats : N. Okoro</option>
+      </select>
+    </label>
+    <label class="field"><span>Code de signature (SMS)</span>
+      <input id="po-otp" type="text" value="482 913" autocomplete="one-time-code">
+    </label>
+    <label class="field"><span>Commentaire</span>
+      <input id="po-comment" type="text" value="Livraison souhaitée semaine 39">
+    </label>
+    <div class="po-totals">
+      <dl class="kv">
+        <dt>total HT</dt><dd id="po-ht">…</dd>
+        <dt>TVA 20 %</dt><dd id="po-tva">…</dd>
+        <dt>total TTC</dt><dd id="po-ttc">…</dd>
+      </dl>
+    </div>
+  </div>
+
+  <h3 class="checks-title">Contrôles de signature</h3>
+  <ul class="list-reset checks" id="po-checks"></ul>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="sign-po">Valider la commande</button>
+    <span class="note" id="po-note"></span>
+  </div>
+
+  <div class="log" id="po-log"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/15.js" defer></script>
+<!--/SCRIPTS-->

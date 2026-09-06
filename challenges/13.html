@@ -1,0 +1,56 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/13.css">
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<div class="card">
+  <div class="card-head">
+    <h2>Compte marchand MRC-55120 : Boutique Grivel</h2>
+    <span class="chip chip-warn" id="risk-chip">risque élevé</span>
+  </div>
+
+  <div class="grid-3">
+    <div class="stat"><div class="n" id="risk-score">87</div><div class="l">score de risque</div></div>
+    <div class="stat"><div class="n" id="tx-24h">143</div><div class="l">transactions 24 h</div></div>
+    <div class="stat"><div class="n" id="disputes-30d">9</div><div class="l">litiges 30 j</div></div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <label class="field"><span>Identifiant marchand</span>
+      <input id="merchant" type="text" value="MRC-55120" readonly>
+    </label>
+    <label class="field"><span>Motif de suspension</span>
+      <select id="reason">
+        <option value="fraud">fraude avérée</option>
+        <option value="chargebacks" selected>rétrofacturations anormales</option>
+        <option value="kyc">documents KYC expirés</option>
+        <option value="legal">réquisition judiciaire</option>
+      </select>
+    </label>
+    <label class="field"><span>Seuil de blocage (EUR)</span>
+      <input id="treshold" type="number" min="0" step="50" value="500">
+    </label>
+    <label class="field field-check"><span>Notification</span>
+      <span class="check-row"><input id="notify-merchant" type="checkbox" checked> prévenir le marchand</span>
+    </label>
+  </div>
+
+  <label class="field"><span>Note de l’analyste</span>
+    <textarea id="analyst-note" rows="3">Rétrofacturations en hausse depuis le 18/08, 4 alertes émetteur non traitées.</textarea>
+  </label>
+
+  <h3 class="signals-title">Signaux de risque</h3>
+  <ul class="list-reset checks" id="signals"></ul>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="block-account">Valider la commande</button>
+    <span class="note" id="block-note"></span>
+  </div>
+
+  <div class="log" id="fraud-log"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/13.js" defer></script>
+<!--/SCRIPTS-->

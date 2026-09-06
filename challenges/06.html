@@ -1,0 +1,53 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/06.css">
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<div class="card">
+  <div class="card-head">
+    <h2>Réservation : salle Kepler (12 places)</h2>
+    <span class="chip" id="slot-chip">créneau libre</span>
+  </div>
+
+  <form id="booking-form" class="booking">
+    <div class="grid-2">
+      <label class="field"><span>Date</span>
+        <input id="date" name="date" type="date">
+      </label>
+      <label class="field"><span>Créneau</span>
+        <select id="slot" name="slot">
+          <option value="09:00-10:00">09:00 - 10:00</option>
+          <option value="10:00-11:30">10:00 - 11:30</option>
+          <option value="14:00-15:00">14:00 - 15:00</option>
+          <option value="16:30-18:00">16:30 - 18:00</option>
+        </select>
+      </label>
+      <label class="field"><span>Participants</span>
+        <input id="seats" name="seats" type="number" min="1" max="12" value="6">
+      </label>
+      <label class="field"><span>Centre de coût</span>
+        <input id="cost-center" name="costCenter" type="text" value="RD-4120">
+      </label>
+    </div>
+
+    <label class="field"><span>Objet de la réunion</span>
+      <input id="purpose" name="purpose" type="text" value="Revue d'architecture edge">
+    </label>
+
+    <label class="inline-check"><input type="checkbox" id="visio" name="visio" checked> visioconférence requise</label>
+
+    <ul class="list-reset checks" id="conflicts"></ul>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="confirm-booking">Valider la commande</button>
+      <span class="note" id="booking-note"></span>
+    </div>
+  </form>
+
+  <div class="log" id="booking-log"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/06.js" defer></script>
+<!--/SCRIPTS-->

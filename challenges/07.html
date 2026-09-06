@@ -1,0 +1,47 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/07.css">
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<div class="card" id="order-panel">
+  <div class="card-head">
+    <h2>File d'expédition : quai 3</h2>
+    <span class="chip" id="order-chip">prête</span>
+  </div>
+
+  <table>
+    <thead><tr><th>référence</th><th>client</th><th>colis</th><th>poids</th><th>état</th></tr></thead>
+    <tbody id="order-rows"></tbody>
+  </table>
+
+  <div class="grid-3" style="margin-top:16px">
+    <label class="field"><span>Transporteur</span>
+      <select id="carrier"></select>
+    </label>
+    <label class="field"><span>Distance (km)</span>
+      <input id="distance" type="number" min="0" max="2000" value="142">
+    </label>
+    <label class="field"><span>Assurance</span>
+      <label class="inline-check"><input type="checkbox" id="insured" checked> valeur déclarée</label>
+    </label>
+  </div>
+
+  <dl class="kv">
+    <dt>valeur déclarée</dt><dd id="declared">…</dd>
+    <dt>poids total</dt><dd id="weight">…</dd>
+    <dt>coût transport</dt><dd id="fee">…</dd>
+  </dl>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="dispatch-order" data-cmd="dispatch">Valider la commande</button>
+    <span class="tip-anchor" data-cmd="tip" data-tip="Le cout est recalcule a chaque changement de transporteur, de distance ou d assurance.">?</span>
+    <span class="note" id="wms-note"></span>
+  </div>
+
+  <div class="log" id="wms-log"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/07.js" defer></script>
+<!--/SCRIPTS-->

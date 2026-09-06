@@ -1,0 +1,5 @@
+.session-card{ border-left: 3px solid #7dd3fc; }
+.session-card .kv dd{ color: #9fd8f5; }
+#vault-rows td:first-child{ font-family: var(--mono); }
+.inline-check{ display:inline-flex; align-items:center; gap:7px; font-size:12.5px; color:#8b98ad; margin:6px 0; }
+.inline-check input{ width:auto; }

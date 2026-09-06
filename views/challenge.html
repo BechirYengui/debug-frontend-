@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="{{LANG}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{PAGE_TITLE}}</title>
+<link rel="stylesheet" href="/static/dojo.css">
+<script>window.DOJO = {{CONFIG}};</script>
+<script src="/static/dojo.js" defer></script>
+{{ALT_ORIGIN_META}}
+{{HEAD}}
+</head>
+<body>
+{{NAV}}
+
+<div class="dojo-chrono" id="dojo-chrono" title="{{t:ch.chrono}}">00:00</div>
+
+<div class="page">
+
+<header class="dojo-top">
+  <a class="back" href="/dashboard">&larr; {{t:g.back}}</a>
+  <div class="title-row">
+    <span class="cc-id big">{{ID}}</span>
+    <h1>{{TITLE}}</h1>
+    <span class="cc-stars">{{STARS}}</span>
+    <span class="badge badge-todo" id="dojo-status">{{t:ch.status.todo}}</span>
+  </div>
+  <p class="subtitle">{{SUBTITLE}}</p>
+  <div class="meta-row">
+    <span class="family-pill family-{{FAMILY_KEY}}">{{FAMILY_NAME}}</span>
+    <span class="meta">~{{MINUTES}} {{t:g.min}}</span>
+    <span class="meta-tabs">{{TABS}}</span>
+    <span class="score-pill" id="dojo-score" hidden></span>
+  </div>
+</header>
+
+<section class="dojo-panel context" id="dojo-context">
+  <h2>{{t:ch.why}}</h2>
+  <p class="intro">{{INTRO}}</p>
+  <div class="context-grid">
+    <div>
+      <h3>{{t:ch.learn}}</h3>
+      <ul class="learn">{{LEARN}}</ul>
+    </div>
+    <div>
+      <h3>{{t:ch.symptom}}</h3>
+      <p class="symptom">{{SYMPTOM}}</p>
+    </div>
+  </div>
+</section>
+
+<section class="dojo-panel objective">
+  <h2>{{t:ch.objective}}</h2>
+  <p>{{t:ch.objective.p}}</p>
+  <pre class="req">POST /api/challenge/{{ID}}/solve
+Content-Type: application/json
+
+{"challengeId":"{{ID}}","action":"validate"}</pre>
+  <p class="small">{{t:ch.objective.note}}</p>
+</section>
+
+<main id="workspace" class="workspace">
+{{WORKSPACE}}
+</main>
+
+<section class="dojo-panel">
+  <h2>{{t:ch.log}}</h2>
+  <p class="small">{{t:ch.log.p}}</p>
+  <div id="dojo-verdict" class="verdict empty">{{t:ch.log.empty}}</div>
+  <dl id="dojo-received" class="received" hidden></dl>
+  <ol id="dojo-server-log" class="server-log" hidden></ol>
+</section>
+
+<section class="dojo-panel hints">
+  <div class="hints-head">
+    <h2>{{t:ch.hints}}</h2>
+    <span class="counter" id="dojo-hint-count"></span>
+    <button class="btn btn-ghost" id="dojo-hint-btn">{{t:ch.hints.btn}}</button>
+  </div>
+  <p class="small">{{t:ch.hints.cost}}</p>
+  <ol id="dojo-hint-list" class="hint-list"></ol>
+  <div class="reveal-row">
+    <button class="btn btn-ghost danger" id="dojo-reveal-btn">{{t:ch.reveal}}</button>
+    <span class="small">{{t:ch.reveal.note}}</span>
+  </div>
+</section>
+
+<section class="dojo-panel debrief" id="dojo-debrief" hidden>
+  <div class="panel-head">
+    <h2>{{t:ch.debrief}}</h2>
+    <span class="badge badge-ok" id="dojo-debrief-badge">{{t:ch.status.done}}</span>
+  </div>
+  <h3>{{t:ch.debrief.cause}}</h3>
+  <p id="dojo-debrief-cause"></p>
+  <h3>{{t:ch.debrief.reflex}}</h3>
+  <p class="reflex" id="dojo-debrief-reflex"></p>
+
+  <div class="quiz" id="dojo-quiz">
+    <h3>{{t:ch.quiz}} <small>{{t:ch.quiz.bonus}}</small></h3>
+    <p class="quiz-q" id="dojo-quiz-q"></p>
+    <div class="quiz-choices" id="dojo-quiz-choices"></div>
+    <p class="quiz-result" id="dojo-quiz-result" hidden></p>
+  </div>
+
+  <div class="solution-row">
+    <button class="btn btn-ghost" id="dojo-solution-btn">{{t:ch.solution.show}}</button>
+  </div>
+  <article class="solution md" id="dojo-solution" hidden></article>
+
+  <nav class="pager">
+    <a class="btn btn-ghost" href="{{PREV_HREF}}">&larr; {{t:ch.prev}}</a>
+    <a class="btn btn-primary" id="dojo-next" href="{{NEXT_HREF}}">{{NEXT_LABEL}} &rarr;</a>
+  </nav>
+</section>
+
+</div>
+
+<div class="toast" id="dojo-toast" hidden></div>
+
+{{SCRIPTS}}
+</body>
+</html>

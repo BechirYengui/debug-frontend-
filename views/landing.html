@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="{{LANG}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{t:landing.meta.title}}</title>
+<link rel="stylesheet" href="/static/dojo.css">
+<link rel="stylesheet" href="/static/site.css">
+</head>
+<body class="lp">
+{{NAV}}
+
+<main class="lp-main">
+
+<header class="lp-hero">
+  <div class="lp-hero-bg" aria-hidden="true"></div>
+  <div class="lp-wrap lp-hero-inner">
+    <div class="lp-hero-text">
+      <span class="kicker">{{t:landing.hero.kicker}}</span>
+      <h1 class="lp-hero-title">{{t:landing.hero.title}}</h1>
+      <p class="lp-hero-sub">{{t:landing.hero.subtitle}}</p>
+      <div class="lp-hero-cta">
+        <a class="btn btn-primary" href="/signup">{{t:landing.hero.cta_primary}}</a>
+        <a class="btn btn-ghost" href="/login">{{t:landing.hero.cta_secondary}}</a>
+      </div>
+      <p class="lp-hero-note">{{t:landing.hero.note}}</p>
+    </div>
+    <dl class="lp-stats">
+      <div><dt>{{t:landing.hero.stat1_n}}</dt><dd>{{t:landing.hero.stat1_l}}</dd></div>
+      <div><dt>{{t:landing.hero.stat2_n}}</dt><dd>{{t:landing.hero.stat2_l}}</dd></div>
+      <div><dt>{{t:landing.hero.stat3_n}}</dt><dd>{{t:landing.hero.stat3_l}}</dd></div>
+    </dl>
+  </div>
+</header>
+
+<section class="lp-section lp-principle">
+  <div class="lp-wrap lp-principle-grid">
+    <div class="lp-head lp-reveal">
+      <span class="kicker">{{t:landing.principle.kicker}}</span>
+      <h2 class="lp-h2">{{t:landing.principle.title}}</h2>
+      <p class="lp-lead">{{t:landing.principle.text}}</p>
+      <p class="lp-lead">{{t:landing.principle.text2}}</p>
+    </div>
+    <div class="lp-reveal">
+      <div class="lp-log">
+        <div class="lp-log-bar" aria-hidden="true"><i></i><i></i><i></i><span>{{t:landing.principle.log_caption}}</span></div>
+        <div class="lp-log-body">
+          <div class="lp-log-entry">
+            <span class="lp-log-time">{{t:landing.principle.log_time_ko}}</span>
+            <div class="lp-log-req">
+              <span class="lp-log-method">{{t:landing.principle.log_method}}</span>
+              <span class="lp-log-path">{{t:landing.principle.log_path}}</span>
+              <span class="lp-log-status ko">{{t:landing.principle.log_code_ko}}</span>
+            </div>
+            <div class="lp-log-kv ko"><b>{{t:landing.principle.log_ct_k}}</b><span>{{t:landing.principle.log_ct_v_ko}}</span></div>
+            <div class="lp-log-kv ko"><b>{{t:landing.principle.log_body_k}}</b><span>{{t:landing.principle.log_body_v_ko}}</span></div>
+            <div class="lp-log-msg ko">{{t:landing.principle.log_ko_msg}}</div>
+          </div>
+          <div class="lp-log-entry">
+            <span class="lp-log-time">{{t:landing.principle.log_time_ok}}</span>
+            <div class="lp-log-req">
+              <span class="lp-log-method">{{t:landing.principle.log_method}}</span>
+              <span class="lp-log-path">{{t:landing.principle.log_path}}</span>
+              <span class="lp-log-status ok">{{t:landing.principle.log_code_ok}}</span>
+            </div>
+            <div class="lp-log-kv ok"><b>{{t:landing.principle.log_ct_k}}</b><span>{{t:landing.principle.log_ct_v_ok}}</span></div>
+            <div class="lp-log-kv ok"><b>{{t:landing.principle.log_body_k}}</b><span>{{t:landing.principle.log_body_v_ok}}</span></div>
+            <div class="lp-log-msg ok">{{t:landing.principle.log_ok_msg}}</div>
+          </div>
+        </div>
+      </div>
+      <p class="lp-log-hint">{{t:landing.principle.log_hint}}</p>
+    </div>
+  </div>
+</section>
+
+<section class="lp-section">
+  <div class="lp-wrap">
+    <div class="lp-head lp-reveal">
+      <span class="kicker">{{t:landing.tracks.kicker}}</span>
+      <h2 class="lp-h2">{{t:landing.tracks.title}}</h2>
+      <p class="lp-lead">{{t:landing.tracks.intro}}</p>
+    </div>
+    <div class="lp-tracks-grid">
+      <article class="lp-card lp-track lp-reveal" data-family="dom">
+        <div class="lp-track-top">
+          <span class="lp-tag">{{t:landing.tracks.dom.tag}}</span>
+          <span class="lp-track-count">{{t:landing.tracks.count}}</span>
+        </div>
+        <h3>{{t:landing.tracks.dom.title}}</h3>
+        <p>{{t:landing.tracks.dom.text}}</p>
+        <ul class="lp-chips">
+          <li>{{t:landing.tracks.dom.i1}}</li>
+          <li>{{t:landing.tracks.dom.i2}}</li>
+          <li>{{t:landing.tracks.dom.i3}}</li>
+          <li>{{t:landing.tracks.dom.i4}}</li>
+        </ul>
+        <div class="lp-track-tools">{{t:landing.tracks.dom.tools}}</div>
+      </article>
+      <article class="lp-card lp-track lp-reveal" data-family="js">
+        <div class="lp-track-top">
+          <span class="lp-tag">{{t:landing.tracks.js.tag}}</span>
+          <span class="lp-track-count">{{t:landing.tracks.count}}</span>
+        </div>
+        <h3>{{t:landing.tracks.js.title}}</h3>
+        <p>{{t:landing.tracks.js.text}}</p>
+        <ul class="lp-chips">
+          <li>{{t:landing.tracks.js.i1}}</li>
+          <li>{{t:landing.tracks.js.i2}}</li>
+          <li>{{t:landing.tracks.js.i3}}</li>
+          <li>{{t:landing.tracks.js.i4}}</li>
+          <li>{{t:landing.tracks.js.i5}}</li>
+        </ul>
+        <div class="lp-track-tools">{{t:landing.tracks.js.tools}}</div>
+      </article>
+      <article class="lp-card lp-track lp-reveal" data-family="net">
+        <div class="lp-track-top">
+          <span class="lp-tag">{{t:landing.tracks.net.tag}}</span>
+          <span class="lp-track-count">{{t:landing.tracks.count}}</span>
+        </div>
+        <h3>{{t:landing.tracks.net.title}}</h3>
+        <p>{{t:landing.tracks.net.text}}</p>
+        <ul class="lp-chips">
+          <li>{{t:landing.tracks.net.i1}}</li>
+          <li>{{t:landing.tracks.net.i2}}</li>
+          <li>{{t:landing.tracks.net.i3}}</li>
+          <li>{{t:landing.tracks.net.i4}}</li>
+          <li>{{t:landing.tracks.net.i5}}</li>
+          <li>{{t:landing.tracks.net.i6}}</li>
+        </ul>
+        <div class="lp-track-tools">{{t:landing.tracks.net.tools}}</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="lp-section">
+  <div class="lp-wrap">
+    <div class="lp-head lp-reveal">
+      <span class="kicker">{{t:landing.how.kicker}}</span>
+      <h2 class="lp-h2">{{t:landing.how.title}}</h2>
+    </div>
+    <ol class="lp-steps">
+      <li class="lp-step lp-reveal">
+        <h3>{{t:landing.how.s1.title}}</h3>
+        <p>{{t:landing.how.s1.text}}</p>
+      </li>
+      <li class="lp-step lp-reveal">
+        <h3>{{t:landing.how.s2.title}}</h3>
+        <p>{{t:landing.how.s2.text}}</p>
+      </li>
+      <li class="lp-step lp-reveal">
+        <h3>{{t:landing.how.s3.title}}</h3>
+        <p>{{t:landing.how.s3.text}}</p>
+      </li>
+      <li class="lp-step lp-reveal">
+        <h3>{{t:landing.how.s4.title}}</h3>
+        <p>{{t:landing.how.s4.text}}</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="lp-section">
+  <div class="lp-wrap">
+    <div class="lp-head lp-reveal">
+      <span class="kicker">{{t:landing.gains.kicker}}</span>
+      <h2 class="lp-h2">{{t:landing.gains.title}}</h2>
+    </div>
+    <div class="lp-gains-grid">
+      <article class="lp-card lp-tile lp-reveal">
+        <h3>{{t:landing.gains.g1.title}}</h3>
+        <p>{{t:landing.gains.g1.text}}</p>
+      </article>
+      <article class="lp-card lp-tile lp-reveal">
+        <h3>{{t:landing.gains.g2.title}}</h3>
+        <p>{{t:landing.gains.g2.text}}</p>
+      </article>
+      <article class="lp-card lp-tile lp-reveal">
+        <h3>{{t:landing.gains.g3.title}}</h3>
+        <p>{{t:landing.gains.g3.text}}</p>
+      </article>
+      <article class="lp-card lp-tile lp-reveal">
+        <h3>{{t:landing.gains.g4.title}}</h3>
+        <p>{{t:landing.gains.g4.text}}</p>
+      </article>
+      <article class="lp-card lp-tile lp-reveal">
+        <h3>{{t:landing.gains.g5.title}}</h3>
+        <p>{{t:landing.gains.g5.text}}</p>
+      </article>
+      <article class="lp-card lp-tile lp-reveal">
+        <h3>{{t:landing.gains.g6.title}}</h3>
+        <p>{{t:landing.gains.g6.text}}</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="lp-section">
+  <div class="lp-wrap">
+    <div class="lp-head lp-reveal">
+      <span class="kicker">{{t:landing.who.kicker}}</span>
+      <h2 class="lp-h2">{{t:landing.who.title}}</h2>
+    </div>
+    <div class="lp-who-grid lp-reveal">
+      <article class="lp-who">
+        <h3>{{t:landing.who.a1.title}}</h3>
+        <p>{{t:landing.who.a1.text}}</p>
+      </article>
+      <article class="lp-who">
+        <h3>{{t:landing.who.a2.title}}</h3>
+        <p>{{t:landing.who.a2.text}}</p>
+      </article>
+      <article class="lp-who">
+        <h3>{{t:landing.who.a3.title}}</h3>
+        <p>{{t:landing.who.a3.text}}</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="lp-section">
+  <div class="lp-wrap">
+    <div class="lp-cta lp-reveal">
+      <h2>{{t:landing.cta.title}}</h2>
+      <p>{{t:landing.cta.text}}</p>
+      <div class="lp-cta-actions">
+        <a class="btn btn-primary" href="/signup">{{t:landing.cta.button}}</a>
+        <a class="btn btn-ghost" href="/guide">{{t:landing.cta.secondary}}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="lp-footer">
+  <div class="lp-wrap">
+    <div class="lp-footer-row">
+      <div>
+        <a class="lp-footer-brand" href="/">{{t:landing.footer.name}}</a>
+        <p class="lp-footer-tagline">{{t:landing.footer.tagline}}</p>
+      </div>
+      <ul class="lp-footer-links">
+        <li><a href="/guide">{{t:landing.footer.guide}}</a></li>
+        <li><a href="/login">{{t:landing.footer.login}}</a></li>
+        <li><a href="/signup">{{t:landing.footer.signup}}</a></li>
+      </ul>
+    </div>
+    <div class="lp-footer-meta">
+      <span>{{YEAR}} · {{t:landing.footer.name}}</span>
+      <span>{{t:landing.footer.photo}}</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+.booking{ margin: 0; }
+.inline-check{
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: #8b98ad;
+  margin: 4px 0 6px;
+}
+.inline-check input{ width: auto; }

@@ -1,0 +1,50 @@
+<!--HEAD-->
+<link rel="stylesheet" href="/c/01.css">
+<!--/HEAD-->
+
+<!--WORKSPACE-->
+<div id="view-transition" class="view-transition" aria-hidden="true"></div>
+
+<div class="card">
+  <div class="card-head">
+    <h2>Promotion vers production</h2>
+    <span class="chip chip-ok" id="pipeline-chip">pipeline vert</span>
+  </div>
+
+  <div class="grid-2">
+    <label class="field"><span>Service</span>
+      <select id="service">
+        <option value="edge-router">edge-router</option>
+        <option value="billing-api">billing-api</option>
+        <option value="search-index">search-index</option>
+      </select>
+    </label>
+    <label class="field"><span>Version candidate</span>
+      <select id="version"></select>
+    </label>
+    <label class="field"><span>Fenêtre de maintenance</span>
+      <input id="window-start" type="time" value="03:00">
+    </label>
+    <label class="field"><span>Trafic canari (%)</span>
+      <input id="canary" type="number" min="1" max="50" value="10">
+    </label>
+  </div>
+
+  <label class="field"><span>Note de release</span>
+    <textarea id="notes" rows="3">Rollout progressif, surveillance p99 pendant 30 min.</textarea>
+  </label>
+
+  <ul class="list-reset checks" id="gates"></ul>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="promote">Valider la commande</button>
+    <span class="note" id="summary"></span>
+  </div>
+
+  <div class="log" id="activity"></div>
+</div>
+<!--/WORKSPACE-->
+
+<!--SCRIPTS-->
+<script src="/c/01.js" defer></script>
+<!--/SCRIPTS-->
