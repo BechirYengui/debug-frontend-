@@ -57,7 +57,7 @@ const CHALLENGES = [
     learn: [
       "Utiliser « Inspecter » sur l'élément réellement sous le curseur et lire ce que DevTools sélectionne",
       "Vérifier une hypothèse avec document.elementFromPoint(x, y)",
-      "Distinguer opacity: 0 / visibility: hidden (qui laissent passer les clics ou non) de display: none et pointer-events: none",
+      "Distinguer opacity: 0 (l'élément reste cliquable) de visibility: hidden, display: none et pointer-events: none (qui le retirent du chemin du pointeur)",
       "Neutraliser un nœud en direct depuis l'onglet Elements"
     ],
     hints: [
@@ -78,7 +78,7 @@ const CHALLENGES = [
         "Une erreur JavaScript interrompait le gestionnaire avant le fetch"
       ],
       answer: 1,
-      why: "opacity: 0 rend un élément transparent, pas inerte : il participe toujours au hit-testing. Seuls display: none, visibility: hidden (pour les clics) ou pointer-events: none le retirent du chemin du pointeur."
+      why: "opacity: 0 rend un élément transparent, pas inerte : il participe toujours au hit-testing. Seuls display: none, visibility: hidden ou pointer-events: none le retirent du chemin du pointeur."
     }
   },
   {
@@ -519,8 +519,8 @@ const CHALLENGES = [
     id: '15', stars: 2, minutes: 18, family: 'net', tabs: ['Network', 'Console'],
     title: "Signature d'un bon de commande",
     subtitle: 'Achats : signer électroniquement le bon de commande fournisseur.',
-    intro: "CORS est le sujet réseau que le plus de développeurs front subissent sans le comprendre. Une origine, c'est schéma + hôte + port : localhost:3000 et 127.0.0.1:3000 sont deux origines différentes, tout comme deux ports du même hôte. Pour un POST en JSON vers une autre origine, le navigateur envoie d'abord tout seul une requête OPTIONS (preflight) que tu n'as jamais écrite. Ce défi te fait voir cette requête fantôme dans le journal du serveur et t'apprend à lire un message CORS au lieu de le craindre.",
-    symptom: "Erreur rouge « blocked by CORS policy » dans la Console. Dans Network, la requête est marquée « CORS error » et le journal du serveur reçoit un OPTIONS que tu n'as pas envoyé.",
+    intro: "CORS est le sujet réseau que le plus de développeurs front subissent sans le comprendre. Une origine, c'est schéma + hôte + port : localhost:3000 et 127.0.0.1:3000 sont deux origines différentes, tout comme deux ports du même hôte. Pour un POST en JSON vers une autre origine, le navigateur envoie d'abord tout seul une requête OPTIONS (preflight) que tu n'as jamais écrite. Ce défi te fait voir cette requête fantôme côté serveur et t'apprend à lire un message CORS au lieu de le craindre.",
+    symptom: "Erreur rouge « blocked by CORS policy » dans la Console. Dans Network, la requête est marquée « CORS error » et le serveur reçoit un OPTIONS que tu n'as pas envoyé.",
     learn: [
       "Définir une origine (schéma + hôte + port) et reconnaître une requête cross-origin",
       "Comprendre la requête preflight OPTIONS et pourquoi le navigateur l'émet",
@@ -529,12 +529,12 @@ const CHALLENGES = [
     ],
     hints: [
       "Onglet Console d'abord : lis le message CORS jusqu'au bout, il nomme l'origine de la page et l'URL visée. Puis onglet Network.",
-      "Compare l'hôte et le port de l'URL appelée avec ceux de la barre d'adresse. Regarde aussi ce que le journal du serveur a reçu (verbe).",
+      "Compare l'hôte et le port de l'URL appelée avec ceux de la barre d'adresse. Regarde aussi ce que le serveur a reçu (verbe).",
       "Le code construit une URL absolue vers une autre origine (un autre port). Le navigateur envoie un preflight OPTIONS, le serveur ne l'autorise pas, et le POST n'est jamais émis."
     ],
     debrief: {
-      cause: "Le code choisit une « passerelle de secours » sur le port suivant : http://<hôte>:<port+1>/api/... . C'est une autre origine. Pour un POST application/json, le navigateur envoie d'abord OPTIONS (preflight). Le serveur répond 405 sans en-têtes Access-Control-Allow-*, donc le navigateur bloque et ne fait jamais partir le POST. Le journal du serveur montre bien l'OPTIONS arrivé.",
-      reflex: "« blocked by CORS policy » : compare les deux origines citées dans le message. Un OPTIONS que tu n'as pas écrit dans le journal du serveur = preflight. La correction côté client est presque toujours d'appeler la même origine (URL relative)."
+      cause: "Le code choisit une « passerelle de secours » sur le port suivant : http://<hôte>:<port+1>/api/... . C'est une autre origine. Pour un POST application/json, le navigateur envoie d'abord OPTIONS (preflight). Le serveur répond 405 sans en-têtes Access-Control-Allow-*, donc le navigateur bloque et ne fait jamais partir le POST. Côté serveur, seul l'OPTIONS est arrivé.",
+      reflex: "« blocked by CORS policy » : compare les deux origines citées dans le message. Un OPTIONS que tu n'as pas écrit, reçu par le serveur = preflight. La correction côté client est presque toujours d'appeler la même origine (URL relative)."
     },
     quiz: {
       question: "Pourquoi le serveur a-t-il reçu une requête OPTIONS ?",

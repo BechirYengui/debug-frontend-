@@ -131,3 +131,15 @@ running locally, the terminal where `npm start` runs displays the same thing.) I
 
 What matters is not succeeding, it is knowing **why** it was broken. After each
 challenge, the debrief and the quiz are there for that.
+
+## 8. Around the challenges
+
+- This guide and the leaderboard can be read without an account; the challenges themselves
+  require you to be signed in: the session cookie is what lets the server credit your requests,
+  including the ones replayed from the Console.
+- The **Profile** page gathers the rules, the scoring (hints, opened solution, quiz), the belts,
+  the interface language, the export of your results and the reset.
+- A card's **reset** button resets the challenge for your account only, and purges whatever the
+  challenge may have left in the browser (local storage).
+- Solutions only open after solving, or explicitly through "I give up" (the challenge is then
+  worth half the points).

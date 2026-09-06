@@ -131,3 +131,15 @@ local, le terminal où tourne `npm start` affiche la même chose.) C'est la seul
 
 Ce qui compte n'est pas de réussir, c'est de savoir **pourquoi** ça cassait. Après chaque
 défi, le débrief et le quiz sont là pour ça.
+
+## 8. Autour des défis
+
+- Ce guide et le classement sont consultables sans compte ; les défis, eux, demandent d'être
+  connecté : c'est le cookie de session qui permet au serveur de créditer tes requêtes, y
+  compris celles rejouées depuis la Console.
+- La page **Profil** rassemble la règle du jeu, le barème (indices, corrigé ouvert, quiz), les
+  ceintures, la langue de l'interface, l'export de tes résultats et la remise à zéro.
+- Le bouton **reset** d'une carte remet le défi à zéro pour ton compte seulement, et purge ce
+  que le défi a pu laisser dans le navigateur (stockage local).
+- Les corrigés ne s'ouvrent qu'après résolution, ou explicitement via « Je sèche » (le défi
+  vaut alors la moitié des points).

@@ -31,7 +31,7 @@ module.exports = {
       learn: [
         'Use "Inspect" on the element actually under the cursor and read what DevTools selects',
         'Verify a hypothesis with document.elementFromPoint(x, y)',
-        'Tell opacity: 0 / visibility: hidden (which let clicks through or not) apart from display: none and pointer-events: none',
+        "Tell opacity: 0 (the element stays clickable) apart from visibility: hidden, display: none and pointer-events: none (which take it out of the pointer's path)",
         'Neutralize a node live from the Elements tab'
       ],
       hints: [
@@ -51,7 +51,7 @@ module.exports = {
           'The button had the disabled attribute',
           'A JavaScript error interrupted the handler before the fetch'
         ],
-        why: "opacity: 0 makes an element transparent, not inert: it still takes part in hit-testing. Only display: none, visibility: hidden (for clicks) or pointer-events: none take it out of the pointer's path."
+        why: "opacity: 0 makes an element transparent, not inert: it still takes part in hit-testing. Only display: none, visibility: hidden or pointer-events: none take it out of the pointer's path."
       }
     },
     '02': {
@@ -284,7 +284,7 @@ module.exports = {
       ],
       hints: [
         'Network tab, Method column of the row that appears on click.',
-        'Open the request → Headers → "Request Method", and compare with the "Objectif" (Goal) box.',
+        'Open the request → Headers → "Request Method", and compare with the "Goal" box.',
         'The request goes out with an HTTP verb the endpoint refuses.'
       ],
       debrief: {
@@ -368,7 +368,7 @@ module.exports = {
       title: 'Opening the vault',
       subtitle: 'Secrets manager: unlock the application vault.',
       intro: "In production, an endpoint's documentation is often incomplete and it is the 401 response that tells you what it requires. The secret you need is almost always already somewhere in the page: a response received at load time, a variable in a closure, local storage. This challenge teaches you to look at all the page's requests and not just the failing one, and to replay a request adding a single thing.",
-      symptom: 'The request is impeccable (POST, JSON, valid body) but the server answers 401, naming a missing header that the "Objectif" (Goal) box does not mention.',
+      symptom: 'The request is impeccable (POST, JSON, valid body) but the server answers 401, naming a missing header that the "Goal" box does not mention.',
       learn: [
         'Read a 401/403 response as "a secret is missing", not "a format is missing"',
         "Explore all the page's requests, including those sent at load time",
@@ -460,8 +460,8 @@ module.exports = {
     '15': {
       title: 'Signing a purchase order',
       subtitle: 'Procurement: electronically sign the supplier purchase order.',
-      intro: 'CORS is the network topic that the most front-end developers suffer through without understanding it. An origin is scheme + host + port: localhost:3000 and 127.0.0.1:3000 are two different origins, just like two ports on the same host. For a JSON POST to another origin, the browser first sends, all by itself, an OPTIONS request (preflight) that you never wrote. This challenge shows you that ghost request in the server log and teaches you to read a CORS message instead of fearing it.',
-      symptom: 'Red "blocked by CORS policy" error in the Console. In Network, the request is marked "CORS error" and the server log receives an OPTIONS you did not send.',
+      intro: 'CORS is the network topic that the most front-end developers suffer through without understanding it. An origin is scheme + host + port: localhost:3000 and 127.0.0.1:3000 are two different origins, just like two ports on the same host. For a JSON POST to another origin, the browser first sends, all by itself, an OPTIONS request (preflight) that you never wrote. This challenge shows you that ghost request on the server side and teaches you to read a CORS message instead of fearing it.',
+      symptom: 'Red "blocked by CORS policy" error in the Console. In Network, the request is marked "CORS error" and the server receives an OPTIONS you did not send.',
       learn: [
         'Define an origin (scheme + host + port) and recognize a cross-origin request',
         'Understand the OPTIONS preflight request and why the browser sends it',
@@ -470,12 +470,12 @@ module.exports = {
       ],
       hints: [
         "Console tab first: read the CORS message to the end, it names the page's origin and the target URL. Then the Network tab.",
-        'Compare the host and port of the called URL with those in the address bar. Also look at what the server log received (verb).',
+        'Compare the host and port of the called URL with those in the address bar. Also look at what the server received (verb).',
         'The code builds an absolute URL to another origin (another port). The browser sends an OPTIONS preflight, the server does not allow it, and the POST is never sent.'
       ],
       debrief: {
-        cause: 'The code picks a "fallback gateway" on the next port: http://<host>:<port+1>/api/... . That is another origin. For an application/json POST, the browser first sends OPTIONS (preflight). The server answers 405 without any Access-Control-Allow-* headers, so the browser blocks and never sends the POST. The server log does show the OPTIONS arriving.',
-        reflex: '"blocked by CORS policy": compare the two origins quoted in the message. An OPTIONS you did not write in the server log = preflight. The client-side fix is almost always to call the same origin (relative URL).'
+        cause: 'The code picks a "fallback gateway" on the next port: http://<host>:<port+1>/api/... . That is another origin. For an application/json POST, the browser first sends OPTIONS (preflight). The server answers 405 without any Access-Control-Allow-* headers, so the browser blocks and never sends the POST. On the server side, only the OPTIONS arrived.',
+        reflex: '"blocked by CORS policy": compare the two origins quoted in the message. An OPTIONS you did not write, received by the server = preflight. The client-side fix is almost always to call the same origin (relative URL).'
       },
       quiz: {
         question: 'Why did the server receive an OPTIONS request?',
@@ -523,7 +523,7 @@ module.exports = {
       title: 'Exporting accounting entries',
       subtitle: "Accounting: send the month's entries to the accounting firm.",
       intro: 'Third-party scripts (analytics, consent, security "guardrails") love wrapping window.fetch. When one of them decides to hold a request back and answer in its place, the application believes it succeeded while the server saw nothing. The trap is twofold: the Console is empty at the default level, and replaying the request from the Console goes through the same replaced fetch. This challenge teaches you to cross-check three mirrors (page log, Network panel, server log), to verify the identity of a native function, to use the Verbose level, and to block a script at load time from DevTools.',
-      symptom: 'The page log announces a 202 "mise en quarantaine" (quarantined) response. Yet Network shows no solve request and the "Journal du serveur" (server log) panel stays empty.',
+      symptom: 'The page log announces a 202 "mise en quarantaine" (quarantined) response. Yet Network shows no solve request and the "Server log" panel stays empty.',
       learn: [
         "Cross-check the application log, Network and the server log: when they diverge, something is answering in the server's place",
         'Verify that a function is native (fetch.toString(), [native code]) and spot a monkey-patch',
@@ -531,7 +531,7 @@ module.exports = {
         'Block a script URL (Network → Block request URL) or restore the native function while paused'
       ],
       hints: [
-        'Compare the three mirrors: the page log says 202, but Network and the "Journal du serveur" panel see nothing. Something in the page is answering in the server\'s place.',
+        'Compare the three mirrors: the page log says 202, but Network and the "Server log" panel see nothing. Something in the page is answering in the server\'s place.',
         'Console: simply type fetch and read what is displayed. Also switch the log level to "Verbose" and click again.',
         'A third-party script loaded in the <head> has replaced window.fetch and quarantines POSTs to the API without sending them. Replaying from the Console goes through that same fetch.'
       ],
