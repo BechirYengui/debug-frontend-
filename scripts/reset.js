@@ -10,18 +10,17 @@
  *   npm run reset -- --all           tous les profils, tous les défis
  *   npm run reset -- --list          lister les profils
  *
- * Le serveur relit progress.json à chaque démarrage : si `npm start` tourne,
- * redémarre-le après une remise à zéro faite ici (ou utilise les boutons du
- * tableau de bord, qui passent par le serveur).
+ * Le script écrit directement dans la base SQLite (DOJO_DB_FILE, sinon ./dojo.sqlite) :
+ * un serveur en cours d'exécution voit le changement immédiatement.
  */
 
-const fs = require('fs');
 const path = require('path');
-const { IDS } = require('../data/challenges');
+const { IDS, CHALLENGES } = require('../data/challenges');
 const { createStore } = require('../lib/store');
+const { defaultPaths } = require('../lib/db');
 
 const ROOT = path.join(__dirname, '..');
-const FILE = process.env.DOJO_PROGRESS_FILE || path.join(ROOT, 'progress.json');
+const { dbFile, progressFile } = defaultPaths(ROOT);
 
 const args = process.argv.slice(2);
 const flags = {};
@@ -38,7 +37,7 @@ if (unknown.length) {
   process.exit(1);
 }
 
-const store = createStore({ file: FILE, ids: IDS, challenges: require('../data/challenges').CHALLENGES });
+const store = createStore({ dbFile, progressFile, ids: IDS, challenges: CHALLENGES });
 
 if (flags.list) {
   store.listUsers().forEach((u) => {

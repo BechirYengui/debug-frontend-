@@ -152,8 +152,12 @@ Les défis ★★★ ont leur logique dans un fichier JS **minifié sur une seul
   ou un bilan d'atelier).
 - **Guide DevTools** : `/guide`, la checklist complète des réflexes, onglet par onglet.
 
-Tout est persisté côté serveur dans `progress.json`. Un fichier de l'ancienne version (un seul
-joueur) est migré automatiquement.
+Tout est persisté côté serveur dans une base **SQLite** (`dojo.sqlite` à la racine, ou
+`DOJO_DB_FILE`), via le module intégré `node:sqlite` : aucune dépendance supplémentaire, chaque
+clic, indice ou résolution n'écrit que la ligne concernée. Un `progress.json` d'une version
+précédente (v1 à v3) est importé automatiquement au premier démarrage si la base est vide, puis
+renommé `progress.json.migrated` : comptes, mots de passe, progression et sessions en cours sont
+conservés.
 
 ### Remise à zéro
 
@@ -168,6 +172,8 @@ npm run reset -- --user=alice    # un autre profil
 npm run reset -- --all           # tous les profils
 npm run reset -- --list          # lister les profils
 ```
+
+Le script écrit directement dans la base : inutile de redémarrer le serveur.
 
 Refaire un défi une semaine plus tard, sans les indices, est le meilleur test.
 
@@ -193,9 +199,12 @@ Variables d'environnement utiles :
 | `PORT` | port principal | `3000` |
 | `DOJO_ALT_PORT` | port secondaire (défi 15) ; `0` pour le désactiver | `PORT + 1` |
 | `DOJO_ALT_ORIGIN` | origine complète du « réplica » visé par le défi 15 quand l'app est derrière un reverse proxy | vide (hôte:port+1) |
-| `DOJO_PROGRESS_FILE` | chemin du fichier de progression | `./progress.json` |
+| `DOJO_DB_FILE` | chemin de la base SQLite | `./dojo.sqlite` |
+| `DOJO_PROGRESS_FILE` | ancien fichier de progression à importer au premier démarrage (si `DOJO_DB_FILE` n'est pas défini, la base est créée à côté) | `./progress.json` |
+| `DOJO_WORKERS` | nombre de processus (`node:cluster`) partageant la même base | `1` |
+| `DOJO_TRUST_PROXY` | nombre de reverse proxies devant l'application, pour que le limiteur de connexions voie l'adresse réelle du client | non défini |
 | `DOJO_QUIET` | désactive le journal du terminal | non défini |
-| `DOJO_SECRET` | clé de signature des cookies de session (sinon générée et stockée dans `progress.json`) | générée |
+| `DOJO_SECRET` | clé de signature des cookies de session (sinon générée et stockée dans la base) | générée |
 
 ---
 
@@ -208,7 +217,7 @@ arrivé. Recette minimale :
 ```bash
 git clone <ton dépôt> debug-frontend && cd debug-frontend
 npm ci --omit=dev
-PORT=3000 DOJO_ALT_ORIGIN=https://replica.debug.example.com npm start   # ou via pm2 / systemd
+PORT=3000 DOJO_WORKERS=2 DOJO_ALT_ORIGIN=https://replica.debug.example.com npm start   # ou via pm2 / systemd
 ```
 
 - **Reverse proxy** : proxifie `https://debug.example.com` vers `127.0.0.1:3000`. Le défi 15 (CORS) a
@@ -216,11 +225,26 @@ PORT=3000 DOJO_ALT_ORIGIN=https://replica.debug.example.com npm start   # ou via
   second nom (`replica.debug.example.com`, ou un autre port ouvert) proxifié vers le même
   processus, et indique-le dans `DOJO_ALT_ORIGIN`. Sans cette variable, le défi vise `hôte:port+1`,
   ce qui ne convient qu'en local.
-- **Persistance** : `progress.json` est écrit dans le dossier du projet (ou `DOJO_PROGRESS_FILE`).
-  Sauvegarde-le si la progression compte.
+- **Persistance** : la base SQLite `dojo.sqlite` est écrite dans le dossier du projet (ou
+  `DOJO_DB_FILE`, par exemple sur un volume dédié). Elle est en mode WAL : les fichiers
+  `dojo.sqlite-wal` et `dojo.sqlite-shm` l'accompagnent pendant que le serveur tourne. Pour la
+  sauvegarder à chaud, utilise une copie cohérente plutôt qu'un `cp` :
+  `sqlite3 dojo.sqlite ".backup sauvegarde.sqlite"` (ou `node -e` avec `VACUUM INTO`) ; serveur
+  arrêté, copier `dojo.sqlite` suffit. Un ancien `progress.json` est importé au premier
+  démarrage (voir « Progression »).
+- **Capacité** : les mots de passe sont vérifiés en asynchrone (scrypt), le classement est mis en
+  cache (5 s) et calculé par une requête agrégée, l'état d'un défi tient en deux requêtes
+  préparées et supporte `If-None-Match`. Un VPS à 2 vCPU avec `DOJO_WORKERS=2` tient plusieurs
+  milliers de joueurs simultanés ; les workers partagent la base, le jeton des défis 12 et 16
+  et le journal du serveur. Seul le limiteur de connexions (20 échecs par adresse et par 10 min
+  sur `/login` et `/signup`, réponse 429) est compté par processus.
+- **Reverse proxy et limiteur** : derrière nginx, ajoute `DOJO_TRUST_PROXY=1` pour que le
+  limiteur distingue les adresses des joueurs (sinon il voit celle du proxy pour tout le monde).
 - **Comptes** : pseudo + mot de passe, sessions signées (`DOJO_SECRET` recommandé en production,
-  sinon une clé est générée dans `progress.json`). Sers l'instance en HTTPS : les cookies de
+  sinon une clé est générée et stockée dans la base). Sers l'instance en HTTPS : les cookies de
   session sont `HttpOnly` et `SameSite=Lax`.
+- **Jeton des défis 12 et 16** : dérivé du secret, il ne change plus à chaque redémarrage (il
+  change si `DOJO_SECRET` ou la base change).
 - **Journal terminal** : `DOJO_QUIET=1` pour le couper sur le serveur.
 
 Exemple nginx :
@@ -235,8 +259,10 @@ server {
 
 ## Développement
 
+Prérequis : Node.js 22.13 ou plus récent (module `node:sqlite` intégré).
+
 ```bash
-npm test                    # tests d'intégration du serveur (API, indices, corrigé, quiz, profils)
+npm test                    # tests d'intégration du serveur (API, indices, corrigé, quiz, profils, migration)
 npm run check               # vérification de syntaxe de tous les fichiers JS
 node test/browser-check.js  # bout en bout dans Chrome headless : chaque défi casse comme prévu
                             # au vrai clic souris, puis se résout et affiche son débrief
@@ -246,12 +272,18 @@ npm run dev                 # serveur avec rechargement automatique
 ### Structure
 
 ```
-server.js                 serveur Express : pages, comptes, API de l'exercice, journal, débrief
+server.js                 assemblage Express : statiques, routes, démarrage, cluster (DOJO_WORKERS)
+lib/db.js                 base SQLite (node:sqlite) : ouverture, pragmas, schéma, migrations
+lib/render.js             catalogue traduit, navigation, cartes, classement, helpers de rendu
+lib/routes/auth.js        langue, connexion, inscription, limiteur de débit
+lib/routes/pages.js       pages HTML : landing, tableau de bord, profil, classement, guide, défi
+lib/routes/api.js         API de l'exercice (/api) et journal terminal
+lib/routes/dojo.js        endpoints internes (/_dojo) : état, indices, corrigé, quiz, reset, export
 data/challenges.js        catalogue des 18 défis (FR) : métadonnées, contexte, indices, débrief, quiz
 data/challenges.en.js     les mêmes textes en anglais
 lib/i18n.js               dictionnaire FR / EN de l'interface, choix de la langue, gabarits
 lib/i18n.pages.js         textes de la landing page et des écrans de compte
-lib/store.js              comptes, sessions signées, progression, score, ceintures, classement
+lib/store.js              comptes, sessions signées, progression, journal des tentatives, score, classement
 lib/markdown.js           rendu Markdown des corrigés et du guide (sans dépendance)
 views/                    gabarits : landing, connexion, inscription, tableau de bord, profil, défi, doc
 public/static/            dojo.css, site.css (landing), dojo.js (chrome des défis), home.js, img/
@@ -264,7 +296,11 @@ docs/guide.md             le guide DevTools (servi sur /guide) ; docs/guide.en.m
 docs/ecrire-un-defi.md    comment ajouter un défi
 scripts/reset.js          npm run reset
 test/                     tests d'intégration et vérification navigateur
+dojo.sqlite               la base (ignorée par git) ; progress.json.migrated : l'ancien fichier importé
 ```
+
+Les tests démarrent le serveur sur une base SQLite temporaire : la base réelle n'est jamais
+touchée. Pour partir d'une base vide en local, supprime `dojo.sqlite*`.
 
 Le chrome de la page (barre du haut, contexte, objectif, chrono, verdict, indices, débrief) est
 fourni par `public/static/dojo.js` et `dojo.css`. Il ne fait jamais partie de l'exercice : le

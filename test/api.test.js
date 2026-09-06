@@ -7,7 +7,7 @@
  *
  *   npm test
  *
- * Le serveur est démarré sur un port libre avec un progress.json temporaire :
+ * Le serveur est démarré sur un port libre avec une base SQLite temporaire :
  * la progression réelle n'est jamais touchée.
  */
 
@@ -16,11 +16,24 @@ const assert = require('node:assert/strict');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const crypto = require('crypto');
 
 process.env.DOJO_QUIET = '1';
-process.env.DOJO_PROGRESS_FILE = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'dojo-')), 'progress.json');
+const TMP = fs.mkdtempSync(path.join(os.tmpdir(), 'dojo-'));
+process.env.DOJO_DB_FILE = path.join(TMP, 'dojo.sqlite');
+process.env.DOJO_PROGRESS_FILE = path.join(TMP, 'progress.json'); // absent : aucune migration
+delete process.env.DOJO_SECRET;
 
-const { app, SESSION_TOKEN, CHALLENGES } = require('../server');
+const { app, SESSION_TOKEN, CHALLENGES, store } = require('../server');
+const { createStore } = require('../lib/store');
+const { limiter } = require('../lib/routes/auth');
+const { IDS } = require('../data/challenges');
+
+/* Accès direct à la base de test (comme un second processus le ferait). */
+function rawDb() {
+  const { DatabaseSync } = require('node:sqlite');
+  return new DatabaseSync(process.env.DOJO_DB_FILE);
+}
 
 let server;
 let base;
@@ -125,13 +138,11 @@ test('pages protégées : redirection vers /login sans session, 401 JSON pour /_
 });
 
 test('profil hérité sans mot de passe : réclamé à la première connexion', async () => {
-  const raw = JSON.parse(fs.readFileSync(process.env.DOJO_PROGRESS_FILE, 'utf8'));
-  raw.users['legacy'] = { name: 'Legacy Player', createdAt: 1, challenges: {} };
-  fs.writeFileSync(process.env.DOJO_PROGRESS_FILE, JSON.stringify(raw));
-  // Le store en mémoire n'a pas relu le fichier : on passe par l'API de création qui détecte le pseudo existant.
-  const { store } = require('../server');
-  store.data.users['legacy'] = { name: 'Legacy Player', createdAt: 1, lang: 'fr', challenges: {} };
-  CHALLENGES.forEach((c) => { store.data.users['legacy'].challenges[c.id] = store.blankEntry(); });
+  // Inséré directement dans la base, comme l'aurait fait la migration d'un ancien progress.json.
+  const db = rawDb();
+  db.prepare('INSERT INTO users (slug, name, name_lower, lang, created_at) VALUES (?, ?, ?, ?, ?)').run('legacy', 'Legacy Player', 'legacy player', 'fr', 1);
+  db.close();
+  assert.equal(store.getUser('legacy').hasPassword, false);
   const claim = await form('/login', { username: 'Legacy Player', password: 'nouveaumdp1' });
   assert.equal(claim.status, 302, 'première connexion fixe le mot de passe');
   const again = await form('/login', { username: 'Legacy Player', password: 'autrechose1' });
@@ -401,11 +412,160 @@ test('deux comptes : progressions séparées, classement, export, suppression de
   assert.equal(login.status, 401, 'compte supprimé');
 });
 
-test('progress.json est au format v3 avec des mots de passe hachés', async () => {
-  const raw = JSON.parse(fs.readFileSync(process.env.DOJO_PROGRESS_FILE, 'utf8'));
-  assert.equal(raw.version, 3);
-  assert.ok(raw.secret && raw.secret.length >= 32);
-  const u = Object.values(raw.users).find((x) => x.name === 'Testeur Un');
-  assert.ok(u.passwordHash && u.salt);
-  assert.ok(!JSON.stringify(raw).includes('motdepasse1'), 'aucun mot de passe en clair');
+test('la base SQLite garde des mots de passe hachés et un secret de session', async () => {
+  const db = rawDb();
+  const meta = Object.fromEntries(db.prepare('SELECT key, value FROM meta').all().map((r) => [r.key, r.value]));
+  assert.ok(meta.secret && meta.secret.length >= 32);
+  assert.ok(Number(meta.schema_version) >= 1);
+  const u = db.prepare('SELECT password_hash, salt FROM users WHERE name = ?').get('Testeur Un');
+  assert.ok(u.password_hash && u.salt);
+  const dump = JSON.stringify(db.prepare('SELECT * FROM users').all());
+  assert.ok(!dump.includes('motdepasse1'), 'aucun mot de passe en clair');
+  assert.ok(!fs.existsSync(process.env.DOJO_PROGRESS_FILE), 'plus de progress.json écrit');
+  db.close();
+});
+
+/* ---------------------------------------------------------------- */
+/* Performance et robustesse : 304, limiteur, migration, jeton      */
+/* ---------------------------------------------------------------- */
+
+test('/_dojo/state : ETag et 304 seulement sur If-None-Match, invalidé par toute écriture', async () => {
+  await dojo('POST', '/_dojo/reset/14');
+  const first = await fetch(base + '/_dojo/state/14', { headers: { Cookie: COOKIE } });
+  assert.equal(first.status, 200);
+  const etag = first.headers.get('etag');
+  assert.match(etag, /^W\/"/);
+  assert.equal(first.headers.get('cache-control'), 'no-store, must-revalidate');
+  const again = await fetch(base + '/_dojo/state/14', { headers: { Cookie: COOKIE } });
+  assert.equal(again.status, 200, 'sans If-None-Match : toujours 200 (client actuel)');
+  assert.equal(again.headers.get('etag'), etag);
+  const cond = await fetch(base + '/_dojo/state/14', { headers: { Cookie: COOKIE, 'If-None-Match': etag } });
+  assert.equal(cond.status, 304);
+  const other = await fetch(base + '/_dojo/state/14', { headers: { Cookie: COOKIE + '; dojo_lang=en', 'If-None-Match': etag } });
+  assert.equal(other.status, 200, 'la langue fait partie de la validité');
+  await dojo('POST', '/_dojo/hint/14?level=1');
+  const after1 = await fetch(base + '/_dojo/state/14', { headers: { Cookie: COOKIE, 'If-None-Match': etag } });
+  assert.equal(after1.status, 200, 'un indice change l\'état');
+  const etag2 = after1.headers.get('etag');
+  assert.notEqual(etag2, etag);
+  await solve('14', { body: '' });
+  const after2 = await fetch(base + '/_dojo/state/14', { headers: { Cookie: COOKIE, 'If-None-Match': etag2 } });
+  assert.equal(after2.status, 200, 'une tentative change l\'état');
+  assert.equal((await after2.json()).log[0].code, 400);
+  await dojo('POST', '/_dojo/reset/14');
+});
+
+test('journal du serveur : au plus 8 tentatives par défi, la plus récente en premier', async () => {
+  for (let i = 0; i < 10; i++) await solve('13', { body: '{"challengeId":"13","action":"go' + i + '"}' });
+  const st = await dojo('GET', '/_dojo/state/13');
+  assert.equal(st.body.log.length, 8);
+  assert.match(st.body.log[0].bodyPreview, /go9/);
+  assert.match(st.body.log[7].bodyPreview, /go2/);
+  assert.equal(st.body.attempts, 10);
+  assert.equal(st.body.lastAttempt.received.bodyPreview, st.body.log[0].bodyPreview);
+  await dojo('POST', '/_dojo/reset/13');
+  const clean = await dojo('GET', '/_dojo/state/13');
+  assert.equal(clean.body.log.length, 0);
+  assert.equal(clean.body.lastAttempt, null);
+});
+
+test('limiteur de débit : 429 après 20 échecs depuis la même adresse, effacé par une réussite', async () => {
+  limiter.reset();
+  for (let i = 0; i < 20; i++) {
+    assert.equal((await form('/login', { username: 'Testeur Un', password: 'faux' + i })).status, 401, 'échec ' + (i + 1));
+  }
+  const blocked = await form('/login', { username: 'Testeur Un', password: 'motdepasse1' });
+  assert.equal(blocked.status, 429);
+  assert.ok(Number(blocked.res.headers.get('retry-after')) > 0);
+  assert.ok(blocked.body.includes('auth-error'));
+  const signupBlocked = await signup('Nouveau Venu', 'motdepasse1');
+  assert.equal(signupBlocked.status, 429, 'l\'inscription partage le compteur');
+  limiter.reset();
+  const ok = await form('/login', { username: 'Testeur Un', password: 'motdepasse1' });
+  assert.equal(ok.status, 302);
+  for (let i = 0; i < 5; i++) await form('/login', { username: 'Testeur Un', password: 'faux' });
+  assert.equal((await form('/login', { username: 'Testeur Un', password: 'motdepasse1' })).status, 302, 'la réussite a effacé le compteur');
+  limiter.reset();
+});
+
+function legacyStore(dir, json) {
+  fs.mkdirSync(dir, { recursive: true });
+  const progressFile = path.join(dir, 'progress.json');
+  if (json) fs.writeFileSync(progressFile, JSON.stringify(json));
+  return { progressFile, open: () => createStore({ dbFile: path.join(dir, 'dojo.sqlite'), progressFile, ids: IDS, challenges: CHALLENGES }) };
+}
+
+test('migration automatique depuis un progress.json v2 : comptes, mots de passe, progression, secret', async () => {
+  const salt = 'ab'.repeat(16);
+  const passwordHash = crypto.scryptSync('ancienmdp1', salt, 32).toString('hex');
+  const secret = 'f'.repeat(64);
+  const solvedEntry = { solved: true, hints: 2, attempts: 5, startedAt: 1000, solvedAt: 61000, durationMs: 60000, revealed: false, quiz: { tries: 1, correct: true } };
+  const v2 = {
+    version: 2, secret, activeUser: 'ancien-joueur',
+    users: {
+      'ancien-joueur': { name: 'Ancien Joueur', createdAt: 123, lang: 'en', passwordHash, salt, challenges: { '01': solvedEntry, '07': { solved: false, hints: 1, attempts: 2, startedAt: 5, solvedAt: null, durationMs: null, revealed: true, quiz: { tries: 0, correct: false } } } },
+      'sans-mdp': { name: 'Sans Mdp', createdAt: 456, challenges: {} }
+    }
+  };
+  const fx = legacyStore(path.join(TMP, 'v2'), v2);
+  const s1 = fx.open();
+  assert.ok(!fs.existsSync(fx.progressFile), 'progress.json renommé');
+  assert.ok(fs.existsSync(fx.progressFile + '.migrated'));
+  assert.deepEqual(s1.listUsers().map((u) => u.slug), ['ancien-joueur', 'sans-mdp']);
+  assert.equal(s1.getUser('ancien-joueur').lang, 'en');
+  assert.equal(s1.getUser('sans-mdp').hasPassword, false);
+  assert.equal(s1.activeSlug(), 'ancien-joueur');
+  assert.deepEqual(s1.entry('ancien-joueur', '01'), solvedEntry);
+  assert.equal(s1.entry('ancien-joueur', '07').revealed, true);
+  assert.deepEqual(s1.entry('ancien-joueur', '02'), s1.blankEntry());
+  const sum = s1.summary('ancien-joueur');
+  assert.equal(sum.done, 1);
+  assert.equal(sum.hints, 3);
+  assert.equal(sum.revealed, 1);
+  assert.equal(sum.understood, 1);
+  assert.equal(sum.timeMs, 60000);
+  assert.equal(sum.score, 100 - 20 + 25, 'le score agrégé en SQL suit le barème');
+  assert.equal(sum.score, s1.scoreEntry(solvedEntry, CHALLENGES[0]));
+  assert.equal((await s1.login('ancien joueur', 'ancienmdp1')).ok, true, 'ancien mot de passe accepté');
+  assert.equal((await s1.login('Ancien Joueur', 'mauvais')).ok, false);
+  const claim = await s1.login('Sans Mdp', 'nouveaumdp1');
+  assert.equal(claim.claimed, true);
+  // Le secret est conservé : une session émise avant la migration reste valide.
+  const cookie = s1.sessionCookie('ancien-joueur');
+  assert.equal(s1.readSession({ headers: { cookie } }), 'ancien-joueur');
+  const expectedToken = 'ops_' + crypto.createHmac('sha256', secret).update('session-token').digest('hex').slice(0, 24);
+  assert.equal(s1.apiToken(), expectedToken);
+  s1.close();
+  // Deuxième ouverture : rien n'est réimporté, le jeton et les sessions sont stables.
+  fs.writeFileSync(fx.progressFile, JSON.stringify({ version: 2, users: { intrus: { name: 'Intrus', challenges: {} } } }));
+  const s2 = fx.open();
+  assert.equal(s2.getUser('intrus'), null, 'une base non vide n\'importe plus');
+  assert.equal(s2.apiToken(), expectedToken);
+  assert.equal(s2.readSession({ headers: { cookie } }), 'ancien-joueur');
+  const board = s2.leaderboard();
+  assert.equal(board[0].slug, 'ancien-joueur');
+  s2.close();
+});
+
+test('migration depuis un progress.json v1 (un seul joueur) et jeton distinct entre bases', async () => {
+  const v1 = { version: 1, challenges: { '03': { solved: true, hints: 0, attempts: 1, startedAt: 1, solvedAt: 2, durationMs: 1, revealed: false, quiz: { tries: 0, correct: false } } } };
+  const fx = legacyStore(path.join(TMP, 'v1'), v1);
+  const s = fx.open();
+  assert.deepEqual(s.listUsers().map((u) => u.name), ['Joueur 1']);
+  assert.equal(s.summary('joueur-1').done, 1);
+  assert.equal(s.getUser('joueur-1').hasPassword, false);
+  assert.notEqual(s.apiToken(), SESSION_TOKEN, 'chaque base a son propre secret');
+  assert.match(s.apiToken(), /^ops_[0-9a-f]{24}$/);
+  s.close();
+});
+
+test('scripts/reset.js agit sur la base : --list et remise à zéro d\'un défi', async () => {
+  const { execFileSync } = require('child_process');
+  await dojo('POST', '/_dojo/hint/09?level=2');
+  const env = Object.assign({}, process.env);
+  const list = execFileSync(process.execPath, [path.join(__dirname, '..', 'scripts', 'reset.js'), '--list'], { env, encoding: 'utf8' });
+  assert.ok(list.includes('Testeur Un'));
+  const out = execFileSync(process.execPath, [path.join(__dirname, '..', 'scripts', 'reset.js'), '9', '--user=Testeur Un'], { env, encoding: 'utf8' });
+  assert.match(out, /09/);
+  assert.equal((await dojo('GET', '/_dojo/state/09')).body.hints, 0, 'le serveur voit le changement sans redémarrer');
 });

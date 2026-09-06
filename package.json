@@ -5,14 +5,14 @@
   "description": "Plateforme d'entraînement au debugging front-end : 18 pages cassées à réparer avec les DevTools, avec contexte, indices, débrief, quiz et corrigés.",
   "main": "server.js",
   "engines": {
-    "node": ">=18"
+    "node": ">=22.13"
   },
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
     "reset": "node scripts/reset.js",
     "test": "DOJO_QUIET=1 node --test test/*.test.js",
-    "check": "node --check server.js && node --check lib/store.js && node --check lib/markdown.js && node --check data/challenges.js && for f in public/c/*.js public/static/*.js scripts/*.js; do node --check \"$f\" || exit 1; done && echo OK"
+    "check": "for f in server.js lib/*.js lib/routes/*.js data/*.js public/c/*.js public/static/*.js scripts/*.js test/*.js; do node --check \"$f\" || exit 1; done && echo OK"
   },
   "dependencies": {
     "express": "^4.19.2"

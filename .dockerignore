@@ -1,7 +1,9 @@
-node_modules/
+node_modules
 progress.json
 progress.json.migrated
 dojo.sqlite*
 *.log
-.DS_Store
-/tmp/
+.git
+.github
+test
+tmp
