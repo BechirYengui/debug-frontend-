@@ -12,7 +12,8 @@
     "dev": "node --watch server.js",
     "reset": "node scripts/reset.js",
     "test": "DOJO_QUIET=1 node --test test/*.test.js",
-    "check": "for f in server.js lib/*.js lib/routes/*.js data/*.js public/c/*.js public/static/*.js scripts/*.js test/*.js; do node --check \"$f\" || exit 1; done && echo OK"
+    "check": "for f in server.js lib/*.js lib/routes/*.js data/*.js public/c/*.js public/static/*.js scripts/*.js test/*.js; do node --check \"$f\" || exit 1; done && echo OK",
+    "site": "node scripts/build-site.js"
   },
   "dependencies": {
     "express": "^4.19.2"

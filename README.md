@@ -25,6 +25,13 @@ npm start
 
 Puis ouvre **http://localhost:3000**.
 
+### La vitrine
+
+[**bechiryengui.github.io/debug-frontend-**](https://bechiryengui.github.io/debug-frontend-/) présente
+le projet, les captures et les 18 défis. C'est une page statique publiée par GitHub Pages
+(`site/`, générée par `npm run site` depuis `data/challenges.js`) : elle montre la plateforme,
+elle ne la fait pas tourner.
+
 ### Essayer sans rien installer, dans un Codespace
 
 [**Ouvrir Debug Frontend dans un Codespace**](https://codespaces.new/BechirYengui/debug-frontend-?quickstart=1)

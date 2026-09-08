@@ -5,3 +5,4 @@ dojo.sqlite*
 *.log
 .DS_Store
 /tmp/
+site/index.html
