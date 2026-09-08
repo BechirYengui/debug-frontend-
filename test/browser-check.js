@@ -110,8 +110,14 @@ async function main() {
   });
   const chrome = spawn(CHROME, [
     '--headless=new', '--remote-debugging-port=' + CDP_PORT, '--no-sandbox', '--disable-gpu', '--no-first-run',
+    '--disable-dev-shm-usage', '--disable-extensions', '--disable-background-networking',
     '--user-data-dir=' + path.join(tmp, 'profile'), '--window-size=1280,900', 'about:blank'
-  ], { stdio: 'ignore' });
+  ], { stdio: ['ignore', 'ignore', 'pipe'] });
+  // La sortie d'erreur de Chrome n'est affichée que s'il refuse de démarrer (utile en CI).
+  let chromeErr = '';
+  chrome.stderr.on('data', (b) => { chromeErr += b.toString(); if (chromeErr.length > 4000) chromeErr = chromeErr.slice(-4000); });
+  let chromeExit = null;
+  chrome.on('exit', (code, signal) => { chromeExit = signal ? 'signal ' + signal : 'code ' + code; });
 
   const cleanup = () => { try { chrome.kill('SIGKILL'); } catch (e) {} try { server.kill(); } catch (e) {} };
   process.on('exit', cleanup);
@@ -119,10 +125,15 @@ async function main() {
   // Attendre serveur et Chrome
   for (let i = 0; i < 100; i++) { try { await fetch(BASE + '/'); break; } catch (e) { await sleep(100); } }
   let version = null;
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 300; i++) {
     try { version = await (await fetch('http://127.0.0.1:' + CDP_PORT + '/json/version')).json(); break; } catch (e) { await sleep(100); }
   }
-  if (!version) { console.error('Chrome ne répond pas sur le port CDP'); cleanup(); process.exit(2); }
+  if (!version) {
+    console.error('Chrome ne répond pas sur le port CDP ' + CDP_PORT + ' après 30 s (binaire : ' + CHROME + ')');
+    if (chromeExit) console.error('Chrome s\'est arrêté (' + chromeExit + ')');
+    if (chromeErr.trim()) console.error('Sortie d\'erreur de Chrome :\n' + chromeErr.trim());
+    cleanup(); process.exit(2);
+  }
   const { SESSION_TOKEN } = await (await fetch(BASE + '/api/session')).json().then((j) => ({ SESSION_TOKEN: j.token }));
 
   // Compte de test : inscription, récupération du cookie de session (posé ensuite dans Chrome).

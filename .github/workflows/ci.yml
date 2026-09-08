@@ -8,9 +8,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
@@ -21,12 +22,17 @@ jobs:
   browser:
     runs-on: ubuntu-latest
     needs: test
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 24
           cache: npm
       - run: npm ci
       - name: Vérification de bout en bout dans Chrome (les 18 défis cassent comme prévu, puis se résolvent)
-        run: CHROME=$(which google-chrome || which chromium-browser || which chromium) node test/browser-check.js
+        run: |
+          CHROME=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium-browser || command -v chromium || true)
+          if [ -z "$CHROME" ]; then echo "Chrome introuvable sur le runner"; exit 1; fi
+          "$CHROME" --version
+          CHROME="$CHROME" node test/browser-check.js
