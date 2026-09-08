@@ -1,0 +1,16 @@
+{
+  "name": "Debug Frontend",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24",
+  "postCreateCommand": "npm ci",
+  "postAttachCommand": "bash .devcontainer/demarrer.sh",
+  "forwardPorts": [3000, 3001],
+  "portsAttributes": {
+    "3000": { "label": "Debug Frontend", "onAutoForward": "openBrowser" },
+    "3001": { "label": "Seconde origine (defi 15, CORS)", "onAutoForward": "silent" }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["dbaeumer.vscode-eslint"]
+    }
+  }
+}

@@ -25,6 +25,24 @@ npm start
 
 Puis ouvre **http://localhost:3000**.
 
+### Essayer sans rien installer, dans un Codespace
+
+[**Ouvrir Debug Frontend dans un Codespace**](https://codespaces.new/BechirYengui/debug-frontend-?quickstart=1)
+lance le serveur sur une machine GitHub et te donne une URL en `app.github.dev` : la plateforme
+complète, comptes et journal du serveur compris. Le conteneur est décrit dans `.devcontainer/`.
+
+Deux points à connaître :
+
+- Les ports sont privés par défaut (visibles de toi seul). Pour partager le lien :
+  `gh codespace ports visibility 3000:public 3001:public -c "$CODESPACE_NAME"`.
+- Le défi 15 (CORS) a besoin d'une seconde origine : `.devcontainer/demarrer.sh` la calcule à
+  partir du port 3001 du Codespace et la passe dans `DOJO_ALT_ORIGIN`. Ce port doit être public
+  lui aussi pour que le défi se comporte comme en production.
+
+GitHub Pages ne convient pas : Debug Frontend est un serveur Node avec une base SQLite, et la
+moitié des défis reposent sur de vraies réponses HTTP (403, 405, préflight CORS) que du statique
+ne sait pas produire.
+
 **Garde le terminal visible pendant que tu joues.** Le serveur y journalise, pour chaque
 requête reçue sur `/api/`, le verbe, l'URL, le port, les en-têtes pertinents et le corps brut :
 
